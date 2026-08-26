@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Care · New Staff Onboarding Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16324F;
+  --ink-2:#1F4468;
+  --paper:#F6F4EE;
+  --card:#FFFFFF;
+  --gold:#AD8A3C;
+  --gold-soft:#F1E7CF;
+  --sage:#54725A;
+  --sage-soft:#E4EBE1;
+  --clay:#9C4A32;
+  --clay-soft:#F1E0D8;
+  --charcoal:#26241F;
+  --charcoal-60:#6B675E;
+  --line:#E4DFD2;
+  --radius:14px;
+  --font-display:'Fraunces', serif;
+  --font-body:'Inter', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--charcoal);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+
+/* ---------- Layout shell ---------- */
+.app{ display:flex; min-height:100vh; }
+.sidebar{
+  width:308px;
+  flex-shrink:0;
+  background:var(--ink);
+  color:#EFEFEC;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:6px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15); border-radius:4px;}
+
+.brand{ padding:24px 22px 16px; border-bottom:1px solid rgba(255,255,255,0.12); }
+.brand .eyebrow{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--gold); opacity:0.9;
+}
+.brand h1{ font-family:var(--font-display); font-weight:600; font-size:20px; line-height:1.2; margin:8px 0 4px; }
+.brand p{ margin:0; font-size:12px; color:#C6CEDA; }
+
+.progress-wrap{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 22px; border-bottom:1px solid rgba(255,255,255,0.12);
+}
+.ring{ position:relative; width:44px; height:44px; flex-shrink:0; }
+.ring svg{ transform:rotate(-90deg); }
+.ring circle{ fill:none; stroke-width:4; }
+.ring .bg{ stroke:rgba(255,255,255,0.15); }
+.ring .fg{ stroke:var(--gold); stroke-linecap:round; transition:stroke-dashoffset 0.5s ease; }
+.ring-label{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-size:10px; color:#fff;
+}
+.progress-text{ font-size:12px; color:#C6CEDA; line-height:1.4; }
+.progress-text strong{ color:#fff; font-weight:600; }
+
+nav.toc{ padding:8px 10px 20px; flex:1; }
+.module-header{
+  font-family:var(--font-mono);
+  font-size:10.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:#8593A8;
+  padding:16px 12px 6px;
+}
+.module-header:first-child{ padding-top:8px; }
+.toc-item{
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+  background:none; border:none; color:#D9DEE6; font-family:var(--font-body);
+  font-size:13.5px; padding:8px 12px; border-radius:9px; cursor:pointer; margin:1px 0;
+}
+.toc-item:hover{ background:rgba(255,255,255,0.07); }
+.toc-item.active{ background:rgba(255,255,255,0.13); color:#fff; }
+.toc-num{
+  font-family:var(--font-mono); font-size:11px; width:20px; height:20px; flex-shrink:0;
+  border-radius:50%; border:1px solid rgba(255,255,255,0.35);
+  display:flex; align-items:center; justify-content:center; color:#C6CEDA;
+}
+.toc-item.done .toc-num{ background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.toc-item.done .toc-num::after{ content:"✓"; }
+.toc-item.done .toc-num span{ display:none; }
+.toc-label{ flex:1; line-height:1.25; }
+.toc-quiz{ margin-top:10px; border-top:1px solid rgba(255,255,255,0.12); padding-top:12px; }
+
+/* ---------- Main ---------- */
+main{ flex:1; min-width:0; padding:48px 56px 100px; max-width:920px; }
+.hero .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); }
+.hero h1{ font-family:var(--font-display); font-weight:700; font-size:40px; line-height:1.1; margin:12px 0 16px; max-width:16ch; }
+.hero .lede{ font-size:16px; line-height:1.65; color:var(--charcoal-60); max-width:62ch; margin-bottom:30px; }
+.hero-module-title{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--charcoal-60); margin:30px 0 12px;
+}
+.hero-module-title:first-of-type{ margin-top:8px; }
+.hero-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin-bottom:6px; }
+.hero-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:16px 18px 14px; cursor:pointer; text-align:left; transition:transform .15s ease, box-shadow .15s ease;
+}
+.hero-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(22,50,79,0.08); }
+.hero-card .toc-num{ border-color:var(--line); color:var(--charcoal-60); margin-bottom:10px; }
+.hero-card h3{ font-family:var(--font-display); font-size:15.5px; margin:0 0 6px; font-weight:600; }
+.hero-card p{ margin:0; font-size:12px; color:var(--charcoal-60); line-height:1.5; }
+
+/* section view */
+.section-view{ display:none; }
+.section-view.active{ display:block; animation:fade .35s ease; }
+@keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+.sec-tag{
+  display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:11px;
+  letter-spacing:0.08em; text-transform:uppercase; padding:5px 10px; border-radius:100px; margin-bottom:14px;
+}
+.tag-gold{ background:var(--gold-soft); color:#8A6C24; }
+.tag-sage{ background:var(--sage-soft); color:var(--sage); }
+.tag-clay{ background:var(--clay-soft); color:var(--clay); }
+.tag-ink{ background:#E4E9EF; color:var(--ink-2); }
+
+.section-view h2{ font-family:var(--font-display); font-weight:700; font-size:30px; margin:0 0 10px; line-height:1.15; }
+.section-view > .intro{ font-size:14.5px; color:var(--charcoal-60); line-height:1.6; max-width:64ch; margin-bottom:20px; }
+
+.facts{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:28px; }
+.fact-chip{ background:var(--ink); color:#fff; border-radius:10px; padding:10px 14px; min-width:120px; }
+.fact-chip .num{ font-family:var(--font-mono); font-size:16px; font-weight:600; color:var(--gold); display:block; }
+.fact-chip .lab{ font-size:11px; color:#C6CEDA; line-height:1.3; }
+
+.group{ border-top:1px solid var(--line); padding:20px 0; }
+.group:first-of-type{ border-top:none; padding-top:0; }
+.group h4{ font-family:var(--font-body); font-weight:700; font-size:14px; margin:0 0 12px; color:var(--ink-2); }
+.group ul{ margin:0; padding-left:0; list-style:none; }
+.group li{ position:relative; padding-left:22px; margin-bottom:9px; font-size:14px; line-height:1.55; }
+.group li::before{ content:""; position:absolute; left:0; top:8px; width:6px; height:6px; border-radius:50%; background:var(--gold); }
+.group li ul{ margin-top:8px; }
+.group li li{ font-size:13px; color:var(--charcoal-60); }
+.group li li::before{ background:var(--charcoal-60); width:4px; height:4px; top:7px; }
+
+.callout{
+  background:var(--clay-soft); border-left:3px solid var(--clay); border-radius:8px;
+  padding:14px 16px; font-size:13.5px; line-height:1.55; margin:18px 0; color:#5C2E1E;
+}
+.callout strong{ color:var(--clay); }
+
+/* reference box */
+.refbox{
+  margin-top:24px;
+  border:1px dashed var(--line);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  background:#FBFAF6;
+}
+.refbox .refhead{
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--charcoal-60); margin-bottom:8px;
+}
+.refbox .refnote{ font-size:13px; color:var(--charcoal-60); line-height:1.55; margin:0 0 10px; }
+.refbox .refdocs{ display:flex; flex-wrap:wrap; gap:8px; }
+.refdoc-chip{
+  font-family:var(--font-mono); font-size:11.5px; background:var(--card); border:1px solid var(--line);
+  border-radius:7px; padding:6px 10px; color:var(--ink-2);
+}
+
+.nav-buttons{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:30px; padding-top:22px; border-top:1px solid var(--line);
+}
+.btn{
+  font-family:var(--font-body); font-size:13.5px; font-weight:600; border:none; border-radius:10px;
+  padding:11px 18px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+}
+.btn-ghost{ background:none; border:1px solid var(--line); color:var(--charcoal-60); }
+.btn-ghost:hover{ border-color:var(--charcoal-60); }
+.btn-primary{ background:var(--ink); color:#fff; }
+.btn-primary:hover{ background:var(--ink-2); }
+.btn-primary.acked{ background:var(--sage); }
+.btn-primary:disabled{ opacity:0.6; cursor:default; }
+
+/* Quiz */
+.quiz-q{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; }
+.quiz-q p.qtext{ font-family:var(--font-display); font-size:16px; font-weight:600; margin:0 0 14px; }
+.quiz-opts{ display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{
+  text-align:left; border:1px solid var(--line); background:#fff; border-radius:9px;
+  padding:10px 14px; font-size:13.5px; cursor:pointer; font-family:var(--font-body);
+}
+.quiz-opt:hover{ border-color:var(--gold); }
+.quiz-opt.correct{ background:var(--sage-soft); border-color:var(--sage); font-weight:600; }
+.quiz-opt.wrong{ background:var(--clay-soft); border-color:var(--clay); }
+.quiz-opt[disabled]{ cursor:default; }
+.quiz-explain{ font-size:12.5px; color:var(--charcoal-60); margin:12px 0 0; display:none; line-height:1.5; }
+.quiz-explain.show{ display:block; }
+.quiz-score{ font-family:var(--font-mono); background:var(--ink); color:#fff; border-radius:var(--radius); padding:20px; text-align:center; font-size:15px; display:none; }
+.quiz-score.show{ display:block; }
+.quiz-score .big{ font-size:30px; color:var(--gold); font-weight:600; display:block; margin-bottom:6px; }
+
+/* Topic-level mini quiz */
+.topic-quiz{ margin-top:32px; padding-top:26px; border-top:1px dashed var(--line); }
+.topic-quiz-head{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--charcoal-60); margin-bottom:14px;
+}
+.topic-quiz .quiz-q{ padding:16px 18px; margin-bottom:12px; }
+.topic-quiz .quiz-q p.qtext{ font-size:14.5px; }
+
+
+
+/* ---------- Login ---------- */
+.login-overlay{position:fixed;inset:0;background:rgba(22,50,79,.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:min(430px,100%);background:#fff;border-radius:18px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center}
+.login-card h2{font-family:var(--font-display);margin-top:0;color:var(--ink)}
+.login-card input{width:100%;padding:13px;border:1px solid var(--line);border-radius:9px;font-size:15px;margin:14px 0;box-sizing:border-box}
+.login-card .error{color:var(--clay);font-size:13px;min-height:18px}
+.user-bar{position:fixed;right:18px;top:14px;z-index:1000;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.user-bar button{margin-left:8px;border:0;background:none;color:var(--ink);cursor:pointer;font-weight:600}
+.user-bar a{margin-left:12px;color:var(--ink);font-weight:700;text-decoration:none;font-size:13px}
+.user-bar a:hover{text-decoration:underline}
+
+/* mobile */
+.menu-toggle{ display:none; }
+@media (max-width:880px){
+  .app{ flex-direction:column; }
+  .sidebar{ position:relative; width:100%; height:auto; max-height:none; }
+  nav.toc{ display:none; }
+  nav.toc.open{ display:block; }
+  .menu-toggle{
+    display:block; margin:0 22px 16px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
+    color:#fff; padding:9px 14px; border-radius:9px; font-family:var(--font-body); font-size:13px; cursor:pointer;
+  }
+  main{ padding:32px 20px 80px; }
+  .hero h1{ font-size:30px; }
+}
+</style>
+</head>
+<body>
+<div class="login-overlay" id="loginOverlay"><div class="login-card"><div class="eyebrow" style="color:#AD8A3C;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Community Care</div><h2>Welcome</h2><p>Enter your nickname before starting the onboarding quiz.</p><input id="nicknameInput" maxlength="30" placeholder="Your nickname"><button class="btn btn-primary" onclick="loginUser()">Start Learning</button><p class="error" id="loginError"></p></div></div>
+<div class="user-bar" id="userBar" style="display:none">👤 <strong id="nicknameDisplay"></strong><a href="/scores">Public scores</a><button onclick="logoutUser()">Change</button></div>
+
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">Tzu Chi · Community Care</div>
+      <h1>New Staff Onboarding</h1>
+      <p>Terms of Reference, SOPs &amp; reference library · updated 18 Aug 2026</p>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="ring">
+        <svg width="44" height="44" viewBox="0 0 46 46">
+          <circle class="bg" cx="23" cy="23" r="19"></circle>
+          <circle class="fg" id="ringFg" cx="23" cy="23" r="19" stroke-dasharray="119" stroke-dashoffset="119"></circle>
+        </svg>
+        <div class="ring-label" id="ringLabel">0/26</div>
+      </div>
+      <div class="progress-text">Topics<br><strong id="progressText">acknowledged: 0 of 26</strong></div>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle">☰ Topics</button>
+
+    <nav class="toc" id="toc"></nav>
+  </aside>
+
+  <main id="main">
+    <section class="hero" id="heroView">
+      <div class="eyebrow">Start here</div>
+      <h1>Welcome to the Community Care team</h1>
+      <p class="lede">Six modules, 31 topics — everything from your official Terms of Reference to detailed SOPs, the partner network, facility checklists, and the innovation work happening behind the scenes. Work through each topic, tap "I understand this" as you go, and finish with a randomised knowledge check.</p>
+      <div id="heroGroups"></div>
+    </section>
+
+    <div id="sectionsRoot"></div>
+  </main>
+</div>
+
+<script>
+/* ---------------- Content data ---------------- */
+const SECTIONS = [
+{ id:1, module:"Terms of Reference", tag:"Compliance", tagClass:"tag-gold", title:"Compliance & KPIs",
+  intro:"Every staff member works towards AIC-set output targets and keeps the paperwork that proves the work happened.",
+  facts:[{num:"2 / 6 / 6 / 12", lab:"APPs — Robust / Frail / Buddying / Befriending"},{num:"24", lab:"GUI sessions required"},{num:"160", lab:"Unique seniors for GUI"},{num:"2 = 1", lab:"Unsuccessful BnB attempts count as 1 success"}],
+  quiz:[
+    {q:"A Centre needs to submit its AAP Listing. Under what circumstance is this required?", opts:["Only at year-end","Whenever AIC requests it","Only for GUI-funded centres","Never — it's optional"], correct:1, exp:"Centres must submit the AAP Listing to AIC whenever asked, not on a fixed schedule."},
+    {q:"What must be recorded for every BnB Case Note, at minimum?", opts:["Name and Date only","Name, Date, Duration and Type","Just the outcome","A photo and signature"], correct:1, exp:"BnB Case Notes must record Name, Date, Duration and Type."},
+    {q:"Both AACs met their AIC KPIs for which financial year — the bar new staff need to keep clearing?", opts:["FY2023/24","FY2024/25","FY2025/26","FY2026/27"], correct:2, exp:"Both AACs met their KPIs for FY2025/26."}
+  ],
+  groups:[
+    {heading:"Output KPIs to hit", items:["Robust Seniors: 2 APPs, plus a Health/Functional Screening","Frail Seniors: 6 APPs, plus a Health/Functional Screening","Buddying: 6 APPs, and the senior receives buddying","Befriending: 12 APPs, and the senior receives befriending","GUI: 24 sessions and 160 unique seniors"]},
+    {heading:"Documents you must keep", items:[{text:"BnB Case Notes", sub:["Record Name, Date, Duration, Type","Two unsuccessful attempts count as one successful attempt"]},{text:"Satisfaction Survey", sub:["Record Name, Date, Response"]}]},
+    {heading:"Reference materials to know", items:["AAC Operations Guide — always use the latest AIC AAC Service Requirement, Operations Guide and KPIs (see the AIC Activity Repository)","AAP Guide Book — refer to it whenever you plan Centre activities","AAP Listing — Centres must submit this to AIC whenever asked","Both AACs met their AIC KPIs for FY2025/26 — that's the bar to keep clearing"]},
+  ]},
+{ id:2, module:"Terms of Reference", tag:"Operations & Admin", tagClass:"tag-ink", title:"Operations & Admin",
+  intro:"The largest part of the role: running programmes, doing outreach, distributing help fairly, and knowing the systems that hold it all together.",
+  facts:[{num:"10 min", lab:"Gap to leave between back-to-back programmes"},{num:"1", lab:"Person-in-charge per programme"},{num:"$1", lab:"Refundable deposit for outings"}],
+  quiz:[
+    {q:"A senior lives just outside the AAC's service boundary but wants to join a programme. What's the correct response?", opts:["Reject them and refer elsewhere","Accept them — Out-of-Boundary seniors are never rejected","Only accept if In-Boundary slots are full","Charge them a boundary surcharge"], correct:1, exp:"Out-of-Service-Boundary seniors are never rejected, even though In-Service-Boundary seniors are prioritised."},
+    {q:"Two popular activities are scheduled to overlap in the same time slot. Why is this specifically discouraged?", opts:["It breaches AIC's licensing terms","It splits attendance and dilutes turnout","It costs more in staffing","It's not discouraged — overlap is fine"], correct:1, exp:"Running simultaneous activities splits attendance and dilutes turnout for both."},
+    {q:"Who is responsible for an outing, under the ToR's staffing rule?", opts:["A committee of 3 staff","One staff member, fully responsible","Whichever volunteer is free","The Centre Manager only"], correct:1, exp:"One staff member is fully responsible for each outing."},
+    {q:"Which system is used specifically to filter for 'Seniors-of-Interest' and upload PHV data?", opts:["Inter-Rai Account","BRIGHT Account","CaritaHub","AAP Finder"], correct:2, exp:"CaritaHub is used for filtering Seniors-of-Interest and uploading PHV data, among other tasks."}
+  ],
+  groups:[
+    {heading:"Planning programmes & activities", items:["Prioritise In-Service-Boundary seniors, but never reject Out-Of-Service-Boundary seniors","Run targeted programmes for minority seniors and for men, and track their attendance separately","Don't run activities at the same time — it splits attendance and dilutes turnout","Space back-to-back programmes 10 minutes apart","Give popular programmes a clear end-time so participants rotate through","Every programme needs one named person-in-charge — clear ownership","The AAP Repository File is a good starting source of ready-made programmes",{text:"Getting a new activity off the ground", sub:["Confirm the coordinator, preferred date/time, and max participants","Check the date/time doesn't clash with other activities before booking a space","Make a bilingual (English & Mandarin) poster with all the details","Track interested seniors in the Activities List file, including a waiting list once it's full","Broadcast the poster on WhatsApp and put it up on the Programme Wall","Set up a WhatsApp group for registered seniors to send reminders closer to the date"]}]},
+    {heading:"Leading physical activities", items:["Instruct motion exercises, mobility training and strength conditioning","Run a Short Physical Performance Battery (SPPB) before and after the programme","Participant safety comes first, always"]},
+    {heading:"Community outreach", items:["Use CaritaHub filters to generate the list of In-Service-Boundary seniors who aren't members yet","Split the outreach team into groups, each assigned specific HDB or private blocks","Each team does targeted outreach to seniors on the CaritaHub list","Aim to complete membership sign-up, community screening and an AAP in a single visit"]},
+    {heading:"Assistance & referrals", items:[{text:"Refer by need:", sub:["Fall risk or undernourishment → Community Nurse","Dementia risk → Viriya","Pain issues → TCM or Rehab","Anything more complex → follow the Integrated Community Care Partnership workflow"]},"Complete a satisfaction and/or I&R survey after giving assistance","Submit a BnB report for every BnB duty completed"]},
+    {heading:"Distributing care packs", items:["Tzu Chi regularly receives donated hampers, diapers, wheelchairs, hospital beds and food for redistribution","Prioritise low-income seniors with higher social risk — e.g. BLUE CHAS households, seniors living alone, feeling lonely, or acting as caregivers","Each Centre keeps a prioritised care-recipient list so distribution stays fair and trackable"]},
+    {heading:"Venue, outings & hygiene", items:[{text:"Preparing a venue", sub:["Help set up tables, chairs, AV and materials","Let seniors help too where it's safe — it builds independence"]},{text:"Managing outings", sub:["One staff member is fully responsible for each outing","Collect a $1 refundable deposit to encourage commitment","Split participants into small groups, each with a volunteer lead for attendance and safety","Everyone wears the Tzu Chi Identity Tag","Book the bus and confirm it the day before; buses can't enter the carpark so pick-up happens roadside","Bring simple dry food, and remind participants to dress appropriately and safely"]},{text:"Hygiene", sub:["The Centre Manager ensures the Centre follows the prescribed Cleaning Requirements"]}]},
+    {heading:"Who to contact", items:["Procurement matters → Medical Admin","Facilities matters → General Affairs","Work stations / internet → IT"]},
+    {heading:"Systems every Comm Care staff must know", items:[{text:"CaritaHub", sub:["Onboarding new members","Creating new programmes","Marking attendance","BnB reports & GUI reports","Filtering for Seniors-of-Interest","Uploading PHV data"]},"Inter-Rai Account and BRIGHT Account — for making referrals","GLOW & Fitness staff also need the 33-session Tzu Chi Shangri-la Programme and how to read Tanita Machine data","AAP Finder & CCMS — recommend the nearest AAC if a senior lives outside Tzu Chi's boundary, or refer to the nearest CCMS"]},
+  ]},
+{ id:3, module:"Terms of Reference", tag:"Volunteer Management", tagClass:"tag-sage", title:"Volunteer Management",
+  intro:"Five different volunteer groups support the Centre, each needing a slightly different approach — plus a longer-term strategy for growing and keeping the volunteer pool.",
+  facts:[{num:"4 × 5", lab:"SUSS NIE301 groups × students per group"}],
+  quiz:[
+    {q:"How many SUSS NIE301 students can be in a single group, under the ToR's limit?", opts:["3","5","8","10"], correct:1, exp:"Up to 4 groups of 5 students each."},
+    {q:"Which volunteer group specifically submits a report after every BnB duty?", opts:["Centre volunteers","NTU & NUS volunteers","Tzu Chi volunteers","AIC-assigned volunteers only"], correct:1, exp:"NTU & NUS volunteers, deployed as BnB Buddies, submit a report after every duty."},
+    {q:"What's the specific role of a 'Tzu Chi Volunteer', distinct from a Centre volunteer?", opts:["Seniors who volunteer as instructors","The conduit between the Centre and the wider Tzu Chi volunteer body","AIC-assigned befriending specialists","IT support only"], correct:1, exp:"A Tzu Chi Volunteer organises duty schedules, recruits and coordinates as the link to the wider volunteer body."}
+  ],
+  groups:[
+    {heading:"Know your volunteer groups", items:[{text:"SUSS NIE301", sub:["Up to 4 groups of 5 students","Mentors supervise closely and avoid overlapping programmes"]},{text:"NTU & NUS volunteers", sub:["Deployed as BnB Buddies or to curate programmes","Every BnB team submits a report after each duty"]},{text:"Centre volunteers", sub:["Encourage seniors to volunteer — as instructors, with admin, or in the kitchen"]},{text:"AIC-assigned volunteers", sub:["Often trained BnB buddies or programme organisers","Coordinate where they'll serve and keep engaging them so they stay committed"]},{text:"Tzu Chi volunteers", sub:["A Tzu Chi Volunteer is the conduit between the Centre and the wider Tzu Chi volunteer body","They set duty schedules, recruit and coordinate — give them clear instructions and specific duties"]}]},
+    {heading:"Building a volunteer strategy", items:["Identify new recruitment sources and partner with communities and companies (e.g. SG Cares, SG Volunteers)","Deploy volunteers according to their interests and abilities","Develop orientation and training for them","Monitor how effective volunteer programmes are, and recommend improvements","Build a culture of recognition and support, with real feedback channels","Track volunteer engagement over time"]},
+    {heading:"How Tzu Chi manages its wider volunteer corps", items:["Tzu Chi draws on a pool of 3,000+ volunteers organisation-wide; roughly 120 regularly support the AACs","About 80% are retirees (leading/facilitating physical & social activities, outreach); the remaining 20% are youths and working adults (mostly befriending/buddying and bread collection outside work hours)","Volunteers are grouped by function — e.g. Teachers' Volunteers (humanistic values/programmes) and Kitchen Volunteers (communal meal prep)","Recruitment includes \"Spread the Seeds of Love\" home gatherings, where volunteers invite neighbours to learn about volunteering","Staff who manage volunteers must complete the \"Essential Foundation in Volunteer Management\" course","New volunteers go through a three-stage training process, progressively building understanding of Tzu Chi's mission, guidelines and philosophy — culminating in certification as a commissioner"]},
+  ]},
+{ id:4, module:"Terms of Reference", tag:"Care Management", tagClass:"tag-sage", title:"Care Management",
+  intro:"The direct casework side of the role.", facts:[],
+  quiz:[
+    {q:"Besides performing BnB duties, what financial-support task falls under Care Management?", opts:["Approving Centre budgets","Applying for social grants and schemes on seniors' behalf","Setting AIC's KPI targets","Managing the Centre's bank account"], correct:1, exp:"Care Management includes casework and applying for relevant social grants/schemes for seniors."},
+    {q:"Referrals under Care Management are made and accepted with which two categories of partner?", opts:["Media outlets and grassroots advisers","Integrated Community Care Partnerships and Community of Care partners","AIC and MOH only","Volunteer organisations only"], correct:1, exp:"Referrals go through Integrated Community Care Partnerships and Community of Care partners."}
+  ],
+  groups:[{heading:"Core responsibilities", items:["Manage casework and apply for relevant social grants and schemes on seniors' behalf","Perform BnB (befriending/buddying) duties","Make and accept referrals with Integrated Community Care Partnerships and Community of Care partners"]}]},
+{ id:5, module:"Terms of Reference", tag:"Stakeholders", tagClass:"tag-gold", title:"Engagement of Stakeholders",
+  intro:"Relationships beyond the Centre walls that make the referral network and care model stronger.", facts:[],
+  quiz:[
+    {q:"Which organisation trains AAC staff in Adaptive Sports and CALM 1.0/2.0, as part of the Centre's stakeholder relationships?", opts:["HDB","Sports SG","National Arts Council","Council for Third Age"], correct:1, exp:"Sports SG has a close working relationship with TCFS, training staff in Adaptive Sports and CALM."},
+    {q:"What typically funds the mural-painting projects run with grassroots partners?", opts:["AIC's core grant","The HDB Lively Places Fund","Ticket sales from outings","Corporate donations only"], correct:1, exp:"These projects are often funded through the HDB Lively Places Fund."}
+  ],
+  groups:[
+    {heading:"Key partners", items:["Grassroots Advisers and Grassroots Organisations","Government agencies, such as AIC","Volunteer organisations, such as SG Volunteer","Social Service Agencies (SSAs), such as Fei Yue","Institutes of Higher Learning and schools"]},
+    {heading:"Why it matters", items:["Strengthens the referral network","Sharpens the Tzu Chi Care Model","Opens opportunities to build capability and capacity","Work with the Media team to develop campaigns that engage these stakeholders"]},
+    {heading:"What this looks like in practice", items:["Joint events with grassroots organisations, e.g. PA-organised carnivals and health fairs","Community record-attempt campaigns (e.g. seniors creating the largest upcycled national symbol) that build pride while raising funds for low-income seniors' meals","Mural-painting projects with grassroots partners, often funded through the HDB Lively Places Fund","A close working relationship with Sports SG, which trains AAC staff in Adaptive Sports and CALM 1.0/2.0","Curating new programmes with the Community Development Council (CDC) and tapping their community assistance schemes"]},
+  ]},
+{ id:6, module:"Terms of Reference", tag:"Projects & Finance", tagClass:"tag-ink", title:"Projects and Finance",
+  intro:"Managing budgets and grant paperwork behind the programmes.", facts:[],
+  quiz:[
+    {q:"Which of these is NOT listed as a core responsibility under Projects and Finance?", opts:["Preparing annual budgets","Preparing grant submissions and reimbursement claims","Approving new hires' salaries","Managing project KPIs and budgets"], correct:2, exp:"Salary approval isn't part of this ToR section — it covers projects, budgets and grants."},
+    {q:"Grant reimbursement claims fall under whose responsibility, per the ToR?", opts:["AIC only","Projects and Finance","Medical Admin","General Affairs"], correct:1, exp:"Preparing grant submissions and reimbursement claims is a Projects and Finance responsibility."}
+  ],
+  groups:[{heading:"Core responsibilities", items:["Prepare and manage projects, including their KPIs and budgets","Prepare annual budgets","Prepare grant submissions and reimbursement claims"]}]},
+{ id:7, module:"Terms of Reference", tag:"Safety", tagClass:"tag-clay", title:"Safety",
+  intro:"AIC/HPB's mandated safety checklist for anyone leading non-studio physical activities. Know this well enough to talk participants through it.", facts:[],
+  quiz:[
+    {q:"A participant has a history of asthma. What should they do before a physical activity, per the safety checklist?", opts:["Avoid all future sessions","Inform the instructor beforehand and keep their inhaler accessible","Nothing — it's not mentioned","Only mention it if symptoms appear"], correct:1, exp:"Seniors with a history of asthma should inform instructors beforehand and keep their inhaler accessible."},
+    {q:"Which of these is listed as a warning sign requiring an immediate staff alert during an activity?", opts:["Feeling slightly warm","Difficulty talking or holding a conversation","Wanting a sip of water","Mild sweating"], correct:1, exp:"Difficulty talking/maintaining a conversation is a listed warning sign, alongside chest tightness and dizziness."},
+    {q:"Per the checklist, what should someone with a pre-existing condition do if unsure how to scale down an activity?", opts:["Skip the activity entirely, always","Ask the instructor how to scale down","Push through regardless","Wait for the next session"], correct:1, exp:"They should approach the instructor for guidance on scaling the activity down, not skip it outright."}
+  ],
+  groups:[
+    {heading:"Before the activity", items:["If you're unwell, or still recovering from illness, don't participate","Make sure you're well-hydrated before, during and after exercise","If you've had asthma attacks or heat injuries before, tell the instructor beforehand — asthmatics should keep their inhaler accessible","If a medication might interfere with the activity, don't take part","With pre-existing conditions or injuries, pace yourself — ask the instructor how to scale down if unsure"]},
+    {heading:"During the activity", items:["Stop immediately and alert the instructor or any staff present if you feel unwell","Pay close attention to how your body feels and take a break at the first sign of trouble"]},
+    {heading:"Warning signs — alert staff right away", items:["Chest tightness","Shortness of breath","Light-headedness, dizziness or blurred vision","Feeling nauseous","Difficulty talking or holding a conversation","Sudden sharp pains in muscles or joints that don't go away"]},
+  ]},
+{ id:8, module:"Terms of Reference", tag:"Incident Management", tagClass:"tag-clay", title:"Incident Management & Reporting",
+  intro:"What to do when something goes wrong, and who needs to know.",
+  facts:[{num:"2", lab:"Staff must respond to each AAS call"},{num:"$1,000", lab:"Excess claimant bears on medical claims"}],
+  quiz:[
+    {q:"If the AAS shows no response from a resident after being called, what's the next step?", opts:["Log it as a false alarm","Proceed immediately to the resident's unit to check on them","Wait 24 hours before acting","Call the police immediately"], correct:1, exp:"With no response, staff proceed immediately to the resident's unit to verify the situation."},
+    {q:"Who has discretion to escalate an incident to HQ, beyond informing the Centre Manager and NOK?", opts:["Any staff member","The Centre Manager, at their discretion","Only AIC","Only the senior's family"], correct:1, exp:"The Centre Manager may escalate to HQ at their discretion."},
+    {q:"Where is the AAS database report generated from?", opts:["A cloud dashboard accessible anywhere","The desktop in the server room","The Centre Manager's personal laptop","It's entirely manual — no report is generated"], correct:1, exp:"The AAS database report is generated from the desktop in the server room."}
+  ],
+  groups:[
+    {heading:"Alarm Alert System (AAS)", items:["The AAS must be monitored at all times during office hours","Two staff should respond to every AAS call at a senior's home"]},
+    {heading:"When the AAS alarm rings", items:["Check the resident's unit number on the AAS panel/digital clock to identify who is calling for help","Generate the report from the AAS database (on the server-room desktop)","Call the resident's listed contact number to check what kind of assistance is needed","If there's no response, proceed immediately to the resident's unit to check on them","If it's a false/accidental activation, log the details in the centre's AAS log","In a genuine emergency, call 995 (ambulance) or 1777 (non-emergency ambulance), call the police if needed, and inform the senior's NOK"]},
+    {heading:"Logging incidents", items:["Record all incidents/accidents at the Centre, and all AAS responses, in the CaritaHub Contact Log","Capture: (a) Name, (b) Location, (c) Time, (d) Description of the incident"]},
+    {heading:"Escalation protocol", items:["Any injury or ambulance call-out must be made known to the Centre Manager and the senior's Next-of-Kin","The Centre Manager may escalate to HQ at their discretion","Anything involving police, likely public/media interest, or reputational risk to Tzu Chi must be reported to HQ, and also to AIC"]},
+    {heading:"Medical expense claims", items:["Centres may submit claims for reimbursement to HQ","The claimant bears the first $1,000 (an excess) of the claim"]},
+  ]},
+{ id:9, module:"Terms of Reference", tag:"Data Protection", tagClass:"tag-ink", title:"Personal Data Protection (PDPA)",
+  intro:"AACs are legally required to handle personal data safely and securely under the Personal Data Protection Act.", facts:[],
+  quiz:[
+    {q:"Which of these is explicitly required BEFORE informing AIC of a data breach?", opts:["Nothing — AIC must be told first","HQ's approval","A public statement","Police notification"], correct:1, exp:"AIC is only informed after HQ has approved, following containment and damage assessment."},
+    {q:"According to the PDPA consent guidance, how much personal data should be collected?", opts:["As much as possible, for completeness","Only what's actually necessary for the stated purpose","Whatever the senior offers voluntarily","A standardised fixed dataset for all seniors"], correct:1, exp:"Only data that's actually necessary for the purpose should be collected."},
+    {q:"What's the second step in the ToR's 4-step data breach response, right after containment?", opts:["Inform AIC","Inform the Centre Manager and HQ","Assess the damage","Issue a public apology"], correct:1, exp:"Step 2 is informing the Centre Manager and HQ immediately, before damage assessment and AIC notification."}
+  ],
+  groups:[
+    {heading:"Getting consent", items:["Tell individuals why you're collecting, using or disclosing their data","Tell them how the data will be collected, used or disclosed","Only collect what's actually necessary for that purpose"]},
+    {heading:"If a data breach happens", items:[{text:"1. Contain the breach", sub:["e.g. shut down the IT system, or stop the process that caused it, immediately"]},"2. Inform the Centre Manager and HQ immediately","3. Assess the damage caused","4. Inform AIC — but only after HQ has approved"]},
+  ]},
+{ id:10, module:"Terms of Reference", tag:"Performance", tagClass:"tag-gold", title:"Performance Appraisal",
+  intro:"Staff are reviewed on three dimensions.", facts:[{num:"3", lab:"Aspects: Performance, Potential, Values"}],
+  quiz:[
+    {q:"Being assigned a project outside your usual expertise primarily tests which appraisal aspect?", opts:["Performance","Potential","Values","None — it's unrelated to appraisal"], correct:1, exp:"This tests attitude toward extra responsibility and applying skills in new domains — the 'Potential' aspect."},
+    {q:"Which tools are mentioned for measuring the 'Performance' aspect's programme impact?", opts:["SPPB, MMSE and GDS","BMI and blood pressure only","Attendance registers only","Volunteer hour logs"], correct:0, exp:"Programme impact under Performance is measured with tools like SPPB, MMSE and GDS."}
+  ],
+  groups:[
+    {heading:"Performance", items:["How much you're contributing to AIC-set KPIs, including:",{text:"Impact of programmes", sub:["Measured with tools like SPPB, MMSE and GDS"]},"Number of unique seniors, men, and minority seniors recruited","Number of beneficiaries reached in outcomes","For roles like Media: reach and response of each publicity campaign"]},
+    {heading:"Potential", items:["You'll be assigned projects outside your immediate expertise","This tests your attitude toward extra responsibility and how well you apply your skills in new domains"]},
+    {heading:"Values", items:["Assessed on how well you live out Tzu Chi's core values"]},
+  ]},
+{ id:11, module:"Terms of Reference", tag:"Care Model", tagClass:"tag-sage", title:"Tzu Chi Comm Care Model",
+  intro:"The bigger picture your day-to-day work sits inside.", facts:[],
+  quiz:[
+    {q:"Which of these is NOT one of the four pillars of the Tzu Chi Comm Care Model?", opts:["Service Model","Active Ageing Programmes","Collaborations with Partners","Staff Recruitment"], correct:3, exp:"The four pillars are Service Model, Active Ageing Programmes, Collaborations with Partners, and Manpower Strategies."},
+    {q:"Where should staff look for the current state of the Care Model?", opts:["The annual report only","The Quarterly OKR Update (CAA, June 2025)","A public website","There's no reference document"], correct:1, exp:"The Quarterly OKR Update (CAA, June 2025) is the named reference for the model's current state."}
+  ],
+  groups:[
+    {heading:"Know these four pillars", items:["Service Model","Active Ageing Programmes","Collaborations with Partners","Manpower Strategies"]},
+    {heading:"Reference", items:["See the Quarterly OKR Update (CAA, June 2025) for the current state of the model"]},
+  ]},
+{ id:12, module:"Terms of Reference", tag:"Medical Benefits", tagClass:"tag-ink", title:"Medical Benefits & Claim Procedures",
+  intro:"How staff themselves access medical benefits and submit claims.", facts:[],
+  quiz:[
+    {q:"Which app guidance is specifically for PART-TIME staff, distinct from the general staff app?", opts:["Alliance icare 2.0","Alliance Heyally","CaritaHub","BRIGHT"], correct:1, exp:"Alliance Heyally guidance is specifically for part-time staff."},
+    {q:"How many named resources does the ToR point staff to for medical benefits and claims?", opts:["1","2","3","5"], correct:2, exp:"Three: Alliance icare 2.0, Alliance Heyally, and company claim/submission information."}
+  ],
+  groups:[{heading:"Know these three resources", items:["Alliance icare 2.0 app guidance","Alliance Heyally app guidance — for part-time staff","Company claim & submission information"]}]},
+{ id:13, module:"Terms of Reference", tag:"Org Structure", tagClass:"tag-ink", title:"Organisation Structure",
+  intro:"Know where your role sits within Community Care.", facts:[],
+  quiz:[
+    {q:"Which document, enclosed with the full ToR, tells you exactly who reports to whom?", opts:["The AAP Guide Book","The Comm Care Organisation Structure chart","The CoC Partners list","The Cleaning Checklist"], correct:1, exp:"The Organisation Structure chart shows reporting lines and where everyone sits."},
+    {q:"Besides the org chart, what else is enclosed with the ToR that new staff should ask about?", opts:["Nothing else is enclosed","Role-specific Job Descriptions and a Tasks Assignment sheet","A list of donors","The postal code files"], correct:1, exp:"Role-specific Job Descriptions and a Tasks Assignment sheet are also enclosed."}
+  ],
+  groups:[{heading:"What to review", items:["The Comm Care Organisation Structure chart (enclosed with the full ToR document) — know your reporting line and who sits where"]}],
+  extraCallout:"<strong>Enclosed with the full document:</strong> role-specific Job Descriptions (Centre Managers, TCM Physician, Head Fitness, Head Physiotherapist, Media, Comm Care Executives/Associates, Comm Care Fitness Executives/Associates, Admin Associates) and the Tasks Assignment sheet for Community Care Managers/Executives/Associates. Ask your Centre Manager for these if you haven't seen them yet."
+},
+
+{ id:14, module:"Befriending & Buddying", tag:"Befriending & Buddying", tagClass:"tag-sage", title:"Befriending & Buddying: Full SOP",
+  intro:"The official standard operating procedure for befriending/buddying — who qualifies, timelines staff must hit, and what a befriender must and must not do.",
+  facts:[{num:"3 wd", lab:"To first contact a senior after referral"},{num:"10 wd", lab:"To assess suitability after first contact"},{num:"1 yr", lab:"To complete required training"}],
+  quiz:[
+    {q:"Which of these is explicitly listed as one of the four Befriending/Buddying risk factors?", opts:["Recently retired","Primary caregiver for someone with high care needs","Owns a pet","Lives in a 4-room flat"], correct:1, exp:"Being a primary caregiver for someone with high care needs is one of the four listed risk factors."},
+    {q:"What must a befriender do immediately if they encounter violent behaviour from a senior?", opts:["Handle it themselves and continue the visit","Report it to the Manager immediately","Wait until the next scheduled report","Quietly withdraw without telling anyone"], correct:1, exp:"Any violent or unmanageable behaviour must be reported to the Manager immediately."},
+    {q:"Which of these is listed under 'living environment' red flags on a home visit?", opts:["A recently mopped floor","Hoarding and excessive clutter","New curtains","A tidy bookshelf"], correct:1, exp:"Hoarding and excessive clutter are listed living-environment red flags."},
+    {q:"Within how many working days must staff inform AIC via IRMS of the outcome, after getting a senior's consent?", opts:["1 working day","3 working days","10 working days","1 month"], correct:1, exp:"AIC must be informed via IRMS within 3 working days of receiving consent."}
+  ],
+  groups:[
+    {heading:"Who qualifies", items:["Befriending: generally needs at least 2 of the risk factors below","Buddying: generally needs at least 1 of the risk factors below",{text:"Risk factors", sub:["Living alone (or as good as) and feels lonely","Limited or no social support","Primary caregiver for someone with high care needs","Limited/no social interaction due to physical or cognitive impairment"]}]},
+    {heading:"Timelines to hit", items:["Contact the senior within 3 working days of referral","Assess suitability within 10 working days of first contact","Inform AIC via IRMS of the outcome within 3 working days of getting consent","A transition from the Interim Befriending Panel or another AAC is complete once a joint visit has happened and an IRMS referral has been raised"]},
+    {heading:"For Buddying specifically", items:["Contact the senior at least once a month, with one face-to-face session every 3 months","Two unsuccessful contact attempts in a month count as fulfilling that month's obligation","Keep documentation of every attempt and correspondence"]},
+    {heading:"Rules for befrienders", items:["Never make independent decisions about a senior's care — escalate concerns to the Centre Lead","Maintain the senior's confidentiality at all times","Never assign a befriender to a senior who has shown violent or unmanageable behaviour","Report any violent/unmanageable behaviour encountered to the Manager immediately","Complete required training within 1 year of starting to provide the service"]},
+    {heading:"What a befriender actually does", items:["Watch for signs of self-neglect or self-harm risk, and home hazards like fall risks","Report any deterioration in a senior's physical or mental health","Build a genuinely supportive relationship — games, tech help, healthy-living tips","Encourage and accompany the senior to at least 1 centre activity a month, where possible"]},
+    {heading:"Home visit red flags to watch for", items:[{text:"Physical appearance", sub:["Poor personal hygiene","Unkempt or inappropriate clothing","Signs of malnutrition or dehydration","Untreated medical conditions or injuries"]},{text:"Living environment", sub:["Unsanitary conditions, hoarding, excessive clutter","Inadequate heating/cooling, pests, missing utilities"]},{text:"Home hazards", sub:["Cracked/uneven flooring, loose handrails, damp or water damage","Overloaded outlets, frayed cords, cluttered walkways, poor lighting, wet floors"]}]},
+  ],
+  reference:{note:"Full SOP document — ask your Centre Manager for the master copy.", docs:["STANDARD OPERATING PROCEDURES FOR BEFRIENDING AND BUDDYING.docx","TCFS SOP for Befriending and Buddying.pdf"]}
+},
+
+{ id:15, module:"Care Referral Process", tag:"Referral Workflows", tagClass:"tag-ink", title:"How Referral Workflows Work",
+  intro:"Nine standardised referral pathways connect AAC seniors to specialist services. The pattern is the same each time: identify the need, get consent, refer, then follow up.",
+  facts:[{num:"9", lab:"Standardised referral workflows"},{num:"3 wd", lab:"Typical time for a provider to acknowledge a referral"}],
+  quiz:[
+    {q:"For a Community Health Post (CHP) referral, which regional RHS covers the West?", opts:["NHG","SingHealth","NUHS","AIC directly"], correct:2, exp:"NUHS covers the West region for CHP referrals; NHG covers Central and SingHealth covers East."},
+    {q:"If a CHP referral hasn't been acknowledged, when should the AAC check in?", opts:["After 1 working day","After 5 working days","After 1 month","Never — just wait"], correct:1, exp:"The AAC should check in with CHP after 5 working days if no acknowledgement is received."},
+    {q:"For a Home Nursing referral, who advises on fees, subsidies and means testing?", opts:["The AAC itself","The HN nurse, before the schedule is confirmed","AIC","The senior's family only"], correct:1, exp:"The Home Nursing provider's nurse advises on fees/subsidies/means testing before confirming the schedule."},
+    {q:"Under the Primary Care Network emergency checklist, what oxygen level threshold suggests things are within normal range?", opts:["Above 90%","Above 96%","Above 99%","Any level is fine"], correct:1, exp:"An oxygen level above 96% is within the normal range on the PCN vitals checklist."}
+  ],
+  groups:[
+    {heading:"Caregiver Support (→ CREST)", items:["Spot the need via PHV data or the Community Screening Tool (CST) — or the caregiver approaches the AAC directly",{text:"Useful probing questions", sub:["Do you want more training in specific caregiving tasks or techniques?","Would a Caregiver Support Group with others on a similar journey help?","Do you have enough support from family, friends or neighbours?","Do you need help managing caregiver stress?"]},"Explain the options (noting some services may be chargeable) and get the caregiver's consent","Refer to CREST or your partnering provider — if uncertain, seek the caregiver's consent to refer to CREST specifically","Acknowledged within 3 working days; AAC follows up on the outcome"]},
+    {heading:"Community Health Post (CHP)", items:["Look for fall risk, involuntary weight loss, unmanaged chronic disease, or unsupervised medication as triggers","Check eligibility: 60+, living within the CHP service boundary, has multiple chronic conditions","Get consent and collect Name, Gender, NRIC, Contact Number, and whether they're open to a TeleConsult","Raise the referral through the correct regional RHS — Central (NHG), East (SingHealth), or West (NUHS), each with its own referral form link","Acknowledged within 3 working days; CHP schedules and runs the session at the AAC (or virtually, or via home visit depending on triage)","AAC checks in with CHP after 5 working days if no acknowledgement is received","AAC sets up the venue, offers water/refreshments for seniors fasting for the session, and reminds them 3 days before"]},
+    {heading:"Day Care (DC)", items:["Share Day Care service info with the senior/caregiver, and note that a doctor's assessment/referral is needed","Check CCMS referral criteria first — CCMS can help with holistic care planning for seniors with little social support","If no CCMS partner, direct the senior to their polyclinic/primary doctor for the required documents (the AAC can provide a memo stating the observed condition)","AIC assesses suitability and raises the IRMS referral; the day care centre is then assigned and runs its own intake process","AAC checks in with the senior/NOK 2 weeks after enquiry, then periodically until enrolment is confirmed"]},
+    {heading:"Home Nursing (HN)", items:["Confirm the senior needs vital-signs monitoring, medication management, nursing care or caregiver training but can't leave home","Refer via the primary care provider (per current PCN process) — check if they're enrolled with a Healthier SG GP first","Raise the referral via IRMS once consent is given","The HN provider assesses suitability; if complex, they may redirect to a healthcare institution instead","HN nurse advises on fees, subsidies and means testing before the schedule is confirmed","AAC follows up 2 weeks after referral, then periodically; if the senior's condition worsens, alert the NOK or encourage a doctor revisit"]},
+    {heading:"Home Personal Care (HPC)", items:["Check for ADL/iADL needs with little or no caregiver support, or a caregiver who is themselves frail","Explain the service and benefits, and get the senior's consent for referral","Refer via SGO for eligibility assessment","AIC assesses and sends the case to an HPC provider via IRMS","The assigned HPC provider contacts the senior directly; for urgent referrals, contact should happen by the next working day"]},
+    {heading:"Mental Health & Dementia (→ CREST)", items:["Watch for CST/PHV flags — low mood, memory issues, feeling unsafe or afraid, loneliness — and behavioural or non-verbal cues of distress",{text:"Sample screening questions", sub:["Can you recall 3 unrelated items after 5 minutes?","In the last 3 days, have you felt sad, depressed, or hopeless?","Have you thought of harming yourself in the last 3 months?","Is there anyone around you who makes you feel afraid or unsafe?","Do you feel lonely, and do you have someone to rely on if you need help?"]},"Seek the senior's informed consent before referring","Refer to CREST in the region, referencing the CST/PHV form","Acknowledged within 3 working days; seen within 2 weeks (earlier for higher mental-health needs); CREST may refer on to COMIT if needed"]},
+    {heading:"Primary Care Network (PCN)", items:["In an emergency — loss of consciousness, uncontrolled bleeding, breathing difficulty — call 995 immediately, inform NOK, and give basic first aid if you can",{text:"Otherwise check vitals against normal ranges", sub:["Blood pressure per chart","Oxygen level above 96%","Pulse rate below 100","Temperature below 37.2°C"]},"Recommend follow-up at the senior's enrolled/nearest GP or polyclinic under Healthier SG, and provide a memo of the observed condition if useful","Ask the senior to call the AAC the day after their doctor's visit","Follow up with senior/NOK if no update within 2-3 working days"]},
+    {heading:"Community Rehab", items:["Watch for falls, hospitalisation, reduced mobility, worsening posture, pain, or reduced ability to join activities as triggers","Share info on Community Rehab Services and Home Therapy (Integrated Home Day Care) options","Get a doctor's referral (the AAC can provide a memo), or route via SGO if one already exists","AAC calls to check the senior followed up with the doctor after 3 working days","Once the doctor passes back the memo, the case is assessed and the IRMS referral submitted, requesting the provider update the AAC on the outcome"]},
+    {heading:"Social Support", items:["Check CCMS eligibility first",{text:"Otherwise route by need", sub:["Meals-on-Wheels — frail, homebound, can't prepare meals, no caregiver","Medical Escort & Transport — needs help moving around, no caregiver support","Family Service Centre — signs of bruising, withdrawal, neglect, or financial manipulation","Social Service Office — needs help affording daily living expenses or bills; call the SSO hotline 1800-222-0000"]},"Explain the scope of service and get verbal or signed consent — for FSC referrals, this includes consent for family members to be contacted","Email the completed referral form to the right provider (CCMS referrals also go to careconsultant@aic.sg)"]},
+    {heading:"Following up on 2S referrals (Social Connector / Community Screening)", items:["Attempt to contact the senior within 3 working days of the referral",{text:"1st attempt outcome → what to do", sub:["Senior explicitly declines and doesn't want further contact → don't attempt a 2nd contact; note this in your update to the referral source","Senior declines a visit only → try again within the next month","Senior is uncontactable → try again within the next 2 working days"]},{text:"2nd attempt outcome → what to do", sub:["Senior is now agreeable → schedule a date/time for the AAC visit","Senior still declines, or is still uncontactable → no further attempts required; log both attempts in your update to the referral source"]},"Update the referral source (family doctor, PCN, or Cluster) within a mutually agreed timeframe on the outcome"]},
+  ],
+  reference:{note:"Each service has a detailed Standardised Work Template spreadsheet with the full step-by-step version, including which party (AAC, provider, or AIC) owns each step — check the team drive.", docs:["Caregiver, CHP, Day Care, Home Nursing, Home Personal Care, Mental Health & Dementia, Primary Care Network, Community Rehab, Social Support — Standardised Work Templates (xlsx)"]}
+},
+{ id:16, module:"Care Referral Process", tag:"Partners & Forms", tagClass:"tag-gold", title:"Communities of Care Partners & Referral Forms",
+  intro:"A quick map of which partner covers which service domain, plus where the paperwork lives.", facts:[],
+  quiz:[
+    {q:"Which partner specifically handles counselling and home repair referrals?", opts:["SAGE Counselling Centre","Fei Yue","365 Cancer Prevention Society","South West CDC"], correct:0, exp:"SAGE Counselling Centre covers counselling and home repair referrals."},
+    {q:"Which partner is named for financial assistance referrals?", opts:["Thye Hua Kwan","South West CDC","Club Heal","Stroke Support Station"], correct:1, exp:"South West CDC is named for financial assistance."},
+    {q:"For Mental Health & Dementia referrals, which three partners are named as covering this domain?", opts:["Club Heal, MINDS, Viriya @ Crest","NTUC Health, Sunlove, Vanguard","Fei Yue, NTUC Health, Vanguard","SASCO, Thye Hua Kwan, HNF"], correct:0, exp:"Club Heal, MINDS and Viriya @ Crest are named for Mental Health & Dementia."}
+  ],
+  groups:[
+    {heading:"Partners by service domain", items:["Primary Care: Bukit Batok Medical Clinic, NUHS, St Luke's Hospital","Home Nursing / Home Personal Care: Home Nursing Foundation, Sunlove, Thye Hua Kwan, NTUC Health, SASCO","Mental Health & Dementia: Club Heal, MINDS, Viriya @ Crest","Day Care: NTUC Health, Sunlove, Vanguard, SASCO","Active Ageing / Community Rehab: Fei Yue, NTUC Health, Vanguard, Stroke Support Station","Social Support & Caregiver Support: 365 Cancer Prevention Society, Home Nursing Foundation, Club Heal, Fei Yue","Financial assistance: South West CDC","Counselling & home repair: SAGE Counselling Centre","Palliative care & medical escort: SASCO, Thye Hua Kwan"]},
+    {heading:"Referral forms on file", items:["Bukit Batok Medical Clinic","CREST / Viriya","Club HEAL","Fei-Yue AAC","Heartware Network","Kampong Senang","NTUC Health","SAGE (client counselling)","SASCO","Stroke Support Station","Sunlove","Thye Hua Kwan Home Care Services","HMS Request Form (SAGE)"]},
+    {heading:"Signed MoUs / partnership agreements on file", items:["365 Cancer Prevention Society","Bukit Batok Medical Clinic","Club Heal","Fei Yue","Home Nursing Foundation","Heartware","Kampong Senang","NTUC Health","NUHS","St Luke's Hospital","Sunlove","Thye Hua Kwan","Viriya","SASCO"]},
+    {heading:"Non-care & corporate partners", items:["BreadTalk & Oishii Bread — donate bread, collected twice weekly for distribution to seniors","Favoured Moments — a social enterprise that matches seniors to part-/full-time jobs","rizHomes — free installation of fall-detection sensors for stay-alone seniors","Heartware & Hey! You've Got Mail — youth volunteers for digital workshops and house visits","Kampung Senang — humanistic and physical/social activity programmes","Prince Siddhattha Child Care Centre — runs inter-generational programmes with seniors","EyeCare House & Optics Excellence — donate spectacle frames; Singapore Polytechnic's School of Optometry offers complimentary eye checks","Sidd Peeth Shree Lakshminarayan Temple & You Fo Yun — food donations for communal meals","Republic Polytechnic (RP) & SUSS — partners on frailty-reversal programmes and geron-tech development","Harity Saloon — free haircuts for seniors"]},
+  ],
+  reference:{note:"The referral forms, signed MoUs, and full partner contact list are all in the team drive. One referral-form file is password-protected for privacy — ask your Centre Manager for the password rather than sharing it in chat or over email.", docs:["Care Referral Forms (per partner)","TCF_MoU — [Partner] – AAC(Jurong East).pdf","CoC Partners.xlsx"]}
+},
+
+{ id:17, module:"Adaptive Sports & Frailty Prevention", tag:"Adaptive Sports", tagClass:"tag-sage", title:"Adaptive Sports Toolkit",
+  intro:"A joint AIC/SportSG toolkit of sports modified so players of any ability — including wheelchair users — can join in.",
+  facts:[{num:"14", lab:"Sports included in the toolkit"}],
+  quiz:[
+    {q:"Under the Five Ways to Wellbeing, which principle relates specifically to trying a new sport?", opts:["Connect","Be Active","Keep Learning","Give"], correct:2, exp:"Keep Learning covers picking up new sports seniors can enjoy."},
+    {q:"Why is background music discouraged during an Adaptive Sports session?", opts:["It costs extra to license","It can distract players","Seniors dislike all music","It's actually encouraged"], correct:1, exp:"Music during play can distract players from instructions and gameplay."},
+    {q:"If a player wants to leave a session early, what should staff offer instead of just letting them go?", opts:["Nothing — just let them leave","An alternative role like scorekeeper or observer status","A refund","A written warning"], correct:1, exp:"Staff should check in on their concerns and offer an alternative role or observer status."}
+  ],
+  groups:[
+    {heading:"Sports in the toolkit", items:["Floorball","Ladder Toss","Volleyball","Badminton","Basketball","Boccia","Ten-Pin Bowling","Darts","Disc Golf","Javelin","Table Tennis","Sport Stacking","Archery","Wheelchair Racing"]},
+    {heading:"Five Ways to Wellbeing (the toolkit's guiding principle)", items:["Connect — meeting and interacting with others","Be Active — in ways that suit their mobility and fitness","Take Notice — of their experience and surroundings","Keep Learning — new sports they can enjoy","Give — by helping and supporting one another"]},
+    {heading:"Setting up a safe, fun session", items:["Choose a space with good lighting, ventilation, and a high enough ceiling for throwing sports","Keep it quiet enough that players can hear instructions — use a microphone if needed","Avoid playing music during play — it can distract players","Keep non-playing seniors seated far enough away that they won't be hit by stray balls, discs, or javelins","Clear the setup of trip hazards — wires, clutter, movable furniture","If players may be easily distracted, arrange the activity in a dedicated, enclosed space so they can focus and stay safe"]},
+    {heading:"Getting to know your players first", items:["Learn their sporting interests and health conditions, and ask for their suggestions too","Consider their abilities and adapt accordingly:",{text:"Adapting by need", sub:["Visual: good lighting and contrast, glasses worn and clean, say a player's name before passing them the ball","Hearing: a quiet environment, hearing aids worn and working","Physical (wheelchair users): anti-tip wheelchairs, seatbelts fastened, footplates folded up, footrests swung away, feet on the ground or a step board","Cognitive: repeat instructions if needed, keep sentences short and simple"]}]},
+    {heading:"Wheelchair safety checklist", items:["Players are seated in anti-tip wheelchairs","Seatbelts are securely fastened","Footplates are folded up and footrests swung away","Players' feet are on the ground or on step boards","Step boards are set at the right height"]},
+    {heading:"Planning the session", items:["Work out how many staff/volunteers/other players you need so everyone can take part safely","Assign roles: Facilitator, Translator, Team leader, Cheerleader/Observer, Score/Timekeeper, Assistant, Coach, Player","Be familiar with the aim, rules and scoring before you start, and prepare an activity plan with modifications for your specific group","Keep equipment in a designated spot, prep a distance-marking string in advance, and script your instructions ahead of time","Position players and facilitators so everyone can see each other, the game, and the scoreboard"]},
+    {heading:"Fostering social interaction", items:[{text:"Before the activity", sub:["Invite players to introduce themselves and share a few favourites (sport, team, colour, snack)","Have the team pick a name and a cheer/movement"]},{text:"During the activity", sub:["Do the team cheer together after every goal","Pair players up with a fun twist (e.g. one uses their left hand, the other their right)"]},{text:"After the activity", sub:["Award a bonus point for correct answers about teammates from the pre-game intros"]}]},
+    {heading:"Facilitating well", items:["Speak with a lower pitch where possible — elderly players hear low tones better — and use a microphone if needed","Match your pace to the players', keep instructions simple, and check understanding by asking players to repeat steps back","Use a symbolic start (a whistle or bell) so everyone knows the activity has begun","Attend to all players equally — avoid even the appearance of favouritism","Stay genuine with praise; seniors can tell when it isn't sincere"]},
+    {heading:"Checking in and reading the room", items:["Ask how players are doing before explaining the activity — it's a quick read of their state of mind","A player who shrugs or says little may be in a low mood and need extra attention during the session","A player who chats freely (weather, grandchildren, food) is likely in a good mood and will engage well","It can help to orient players to the date, day, time, and any upcoming festivals or events"]},
+    {heading:"Wrapping up the session", items:["Watch faces and body language for tiredness, and schedule water breaks","If a player wants to leave early, check in on their concerns first, and offer them an alternative role (scorekeeper, cheerleader) or observer status instead","End with a round of applause, share a few genuine observations about players' efforts, and have players help pack away equipment","Sanitise hands again before players leave, and tease the next activity to build anticipation","Wipe down and store equipment properly, ready for the next round"]},
+  ],
+  reference:{note:"Full rules, facilitation tips, and instructional video links for each sport are in the toolkit.", docs:["Adaptive Sports Toolkit Full Volume.pdf"]}
+},
+{ id:18, module:"Adaptive Sports & Frailty Prevention", tag:"Combat Frailty", tagClass:"tag-clay", title:"SportSG Frailty Prevention Programme",
+  intro:"A joint AIC/SportSG programme to reverse age-related muscle loss and build seniors' fitness in a structured, measured way. Part of Age Well SG's push to bring frailty-prevention into the community, expanding from 157 to all 220 AACs by the end of FY25.",
+  facts:[{num:"CFS 1-3", lab:"Eligible for CALM 1.0"},{num:"20 wks", lab:"Full programme length"},{num:"67.5m²", lab:"Space needed for 30 pax CALM 1.0 session"}],
+  quiz:[
+    {q:"In CALM 1.0, what's the maximum number of sessions a senior can miss across Weeks 2-7 and still continue?", opts:["0","2","4","No limit"], correct:1, exp:"Seniors shouldn't miss more than 2 sessions across Weeks 2-7 to stay in the programme."},
+    {q:"Which two options make up the Maintenance Phase after CALM 1.0?", opts:["Yoga or Tai Chi","Aqua Fun Fit or Square Stepping","Adaptive Sports or Combat Frailty","Walking or cycling"], correct:1, exp:"The Maintenance Phase continues with either Aqua Fun Fit or Square Stepping."},
+    {q:"What happens to CALM 1.0 or Adaptive Sports equipment once it wears out?", opts:["It's automatically replaced by SportSG","It's a once-off — no replacement is provided","AIC pays for replacements","Centres share equipment with each other"], correct:1, exp:"Equipment support is strictly once-off, with no replacement once it wears out."}
+  ],
+  groups:[
+    {heading:"What CALM 1.0 is actually for", items:["Stands for Combat Age-related Loss of Muscle — raises awareness of lean muscle tissue's role in daily functioning as seniors age","Gives practical strategies across exercise, nutrition and sleep to maintain or build lean muscle and optimise daily function"]},
+    {heading:"Setting up CALM 1.0 (Weeks 1-8)", items:["For seniors with a Clinical Frailty Score (CFS) of 1 to 3 — generally very fit, well, or managing existing conditions well","At least 2 staff/volunteers must attend the half-day CALM 1.0 training","Space needed: 67.5m² for 30 participants (1.5m x 1.5m per person)","Equipment needed: a projector & screen or white wall, plus chairs for 30","Weeks 1 & 8: a 2-hour orientation, assessment and check-in at a nearby Active Health Lab or ActiveSG Sport Centre","Weeks 2-7: 1 instructor-led session, plus 1-2 supervised practice sessions on separate days, run by AAC staff/volunteers"]},
+    {heading:"What staff are responsible for", items:["Identify and recruit a committed group of participants, and submit the namelist to SportSG 1 month before Week 1 starts","Support instructor-led sessions — attendance-taking, setting up/down chairs and the projector, staying close to seniors who need more help","Run the 1-2 supervised practice sessions using Active Health videos","Handle admin — liaising with the equipment vendor, attendance-taking, and data collection"]},
+    {heading:"Attendance & eligibility for seniors", items:["Should attend at least 1 session a week, and can miss no more than 2 sessions total across Weeks 2-7","Sessions are predominantly conducted in English","If a senior misses the Week 1 or 8 assessment, trained staff arrange a separate catch-up assessment (excluding body composition) before they rejoin"]},
+    {heading:"Safety & injury coverage", items:["Seniors complete a Get Active Questionnaire in Week 1 to flag physical-wellbeing concerns before starting","Trainers run a wellness check before, during and after every session","As with any exercise programme, the AAC assumes the exercise-related risk — training and certified trainers are there to mitigate it, not eliminate it"]},
+    {heading:"Maintenance Phase (Weeks 9-20)", items:["The same cohort continues into either Aqua Fun Fit or Square Stepping — no new sign-ups partway through","Pre/post assessments run at Weeks 1, 8 and 20 to track the programme's effect","No, seniors who skipped CALM 1.0 cannot join just the Maintenance Phase — it's one continuous 20-week programme"]},
+    {heading:"Square Stepping specifics", items:["Mats are delivered to the AAC about 1 week before the activity starts","Each mat accommodates up to 10 seniors — 3 mats for a 30-pax group","Needs about 64m² of space (8m by 8m)"]},
+    {heading:"Aqua Fun Fit specifics", items:["Held at a nearby ActiveSG swimming pool — the AAC does not provide transport","Offered depending on pool, instructor and senior availability, so isn't guaranteed for every centre","Seniors need an ActiveSG Plus membership to enter; seniors under 65 pay the standard pool entry charge","Non-swimmers or seniors afraid of the water can still take part by staying near the pool edge, ideally with a buddy nearby"]},
+    {heading:"Adaptive Sports under this programme", items:["Open to seniors with CFS 1-5 — a wider range than CALM 1.0's CFS 1-3","Staff are recommended (not required) to attend SportSG's Adaptive Sports training first","Equipment can also be used to run other activities in the toolkit, once seniors are comfortable with it","AIC hopes this becomes a permanent centre feature — seniors can eventually self-conduct sessions or lead an interest group","This is explicitly NOT a train-the-trainer model — trained staff aren't expected to certify others","If more volunteers want the training, the Centre can ask AIC to arrange extra sessions with SportSG"]},
+    {heading:"Equipment & replacement policy", items:["Equipment support is a strictly once-off — there's no replacement once it wears out, so it needs looking after","CALM 1.0 kit: one wheeled box (66cm L x 46cm W x 39cm H) holding 15 pairs of dumbbells from 1-5kg, weighing 74kg total","Square Stepping: 2-3 mats","Adaptive Sports kit includes items like Ladder Toss sets, a Disc Golf set, Boccia set, Sport Stacking sets, a Seated Floorball set, and 2 anti-tipping wheelchairs — plan storage space accordingly"]},
+  ]},
+
+{ id:19, module:"SEEN Service Model & Operations", tag:"About Tzu Chi SEEN", tagClass:"tag-ink", title:"About Tzu Chi SEEN",
+  intro:"The organisational story behind the Centres you're joining.",
+  facts:[{num:"30+ yrs", lab:"TCFS serving the Singapore community"},{num:"3,700+", lab:"Combined BB + NY membership (Jun 2024)"},{num:"50-70", lab:"Programmes run weekly per centre"}],
+  quiz:[
+    {q:"Roughly what share of Bukit Batok's participants live outside its assigned service boundary?", opts:["~5%","~15%","~30-40%","~70%"], correct:2, exp:"About 30-40% of BB's participants live outside the assigned service boundary, thanks to the No Wrong Door Policy."},
+    {q:"What does 'Activities on Wheels' specifically involve?", opts:["A mobile library service","Staff/volunteers bringing activities directly to seniors' homes","A bus service for outings only","A fleet of wheelchairs for loan"], correct:1, exp:"Activities on Wheels brings activities, health checks and bread deliveries directly to seniors' homes."},
+    {q:"In the 2023 survey, what percentage of seniors said they'd recommend the AAC to family or friends?", opts:["100%","97%","95%","88%"], correct:3, exp:"88% would recommend the AAC — the lowest of the four survey figures, though still strong."}
+  ],
+  groups:[
+    {heading:"Where SEEN fits", items:["Tzu Chi SEEN (Seniors Engagement and Enabling Node) runs the Active Ageing Centres (AACs) under Tzu Chi's Community Care function","TCFS is linked to the Buddhist Compassion Relief Tzu-Chi Foundation (Taiwan, est. 1966), an international humanitarian NGO operating in more than 130 countries and regions, with special consultative status at the UN Economic and Social Council","AIC invited TCFS to operate 2 AACs from 2019, after the incumbent operators withdrew: Bukit Batok (onboarded as an AAC in 2023) and Nanyang (onboarded 2024)"]},
+    {heading:"Centre positioning & scale", items:["Bukit Batok (BB) is a Centre of Excellence in Fitness and Humanistic Programmes","Nanyang (NY) is a Centre of Excellence in Nutrition — NY pioneered the 乐乐煮 communal meals programme before it rolled out to BB","Both centres run 50-70 programmes a week, on- and off-site, with an average enrolment of about 20 seniors per programme — 4,000-5,600 activity slots monthly","Membership at both centres has more than doubled between Jan 2023 and Jul 2024"]},
+    {heading:"No Wrong Door Policy", items:["TCFS AACs welcome seniors regardless of home address, and admit \"young seniors\" from age 40, plus spouses under 60","This has helped BB build a membership of 2,500+ against an assigned population of just 1,500 — about 30-40% of participants live outside the service boundary","The AAC at Bukit Batok won the Healthcare Humanity Award (Team and Individual categories) in 2024"]},
+    {heading:"Reaching seniors who can't come to the Centre", items:["Activities on Wheels (AOW) — staff and volunteers bring activities to seniors' homes, checking health/emotional status, taking vital signs, and delivering bread and useful materials","Activities without Walls — using nearby parks and amenities for outings, weekly walking/cycling groups (e.g. Cycle with Neighbours is popular with senior men), and bi-monthly social outings","Co-Sharing of Public Spaces — e.g. BB uses a nearby pavilion (with retractable blinds being installed) to add roughly 80 activity slots a day"]},
+    {heading:"How seniors rated the service (2023 survey)", items:["100% found staff friendly","97% said their physical/mental wellbeing improved","95% were satisfied with services overall","88% would recommend the AAC to family or friends"]},
+  ]},
+{ id:20, module:"SEEN Service Model & Operations", tag:"Care Model", tagClass:"tag-sage", title:"The ASCEND Care Model",
+  intro:"TCFS's philosophy for matching the right level of support to each senior's frailty profile.",
+  facts:[{num:"~87%", lab:"Seniors who are relatively robust"},{num:"~11%", lab:"Pre-frail"},{num:"~2%", lab:"Frail"}],
+  quiz:[
+    {q:"Under ASCEND, which group's care strategy is 'CarE' — one-stop, seamless support to end-of-life?", opts:["Robust","Pre-frail","Frail","All three equally"], correct:2, exp:"Frail seniors (~2%) receive seamless CarE from joining through to end-of-life."},
+    {q:"How often do unannounced risk inspections happen under the Enterprise Risk Management Framework?", opts:["Monthly","Every 6 months","Annually","Never — only announced inspections occur"], correct:1, exp:"Unannounced risk inspections happen every 6 months to catch gaps between annual reviews."},
+    {q:"Roughly what fraction of seniors live alone, raising isolation risk?", opts:["1 in 10","1 in 5","1 in 3","1 in 2"], correct:2, exp:"About 1 in 3 seniors live alone, a key driver of frailty to watch for."}
+  ],
+  groups:[
+    {heading:"Three groups, three strategies", items:[{text:"Robust (~87%)", sub:["Keep them Active with a wide variety of weekly programmes","About 80% of sampled seniors maintain or improve their health this way"]},{text:"Pre-frail (~11%)", sub:["Keep them Strong through multi-disciplinary programmes developed with Republic Polytechnic that target cognition, balance and strength"]},{text:"Frail (~2%)", sub:["Provide one-stop, seamless CarE from the time they join to end-of-life, via internal healthcare/charity services and Communities of Care (CoC) partners"]}]},
+    {heading:"Also core to the model", items:["Nutritious food — programmes like Share a Pot and Eat Well Age Well combat frailty through diet","Dignity — helping seniors access job opportunities and monetise craft work they create at the centre, e.g. selling it online, at workshops, or flea markets","About 1 in 3 seniors live alone, which raises isolation risk and is a key driver of frailty to watch for"]},
+    {heading:"Risk management staff should know", items:["Hygiene: equipment used for vital-signs measurement is cleaned and disinfected daily","Medical emergencies: all staff are briefed on the nearest AED, referral clinic and first-aid box location","Abuse prevention: Community Screening is used to detect neglect, abuse or violence against seniors","Fall prevention: home fall-detection sensors plus regular physical activity and environmental changes at the centre","Fire safety: a clear evacuation plan and regular fire drills"]},
+    {heading:"Reinforced by an Enterprise Risk Management Framework", items:["Risks are identified and reviewed annually","Unannounced risk inspections happen every 6 months to catch gaps","Staff are encouraged to report every risky incident, not just the serious ones"]},
+  ]},
+{ id:30, module:"SEEN Service Model & Operations", tag:"Innovation & Tech", tagClass:"tag-gold", title:"Innovation & Technology",
+  intro:"How TCFS is trying to do more with a lean care workforce — process changes, new equipment, and where AI fits in.",
+  facts:[],
+  quiz:[
+    {q:"What is robotic tuina being explored for, in partnership with NTU?", opts:["Replacing all TCM services","Easing the manpower burden of manual tuina","Diagnosing dementia","Automating attendance-taking"], correct:1, exp:"Robotic tuina is being explored to ease the manpower burden of this pain-management technique."},
+    {q:"How often, and for how long, does a BIXEPS session typically run?", opts:["Once a week, 30 minutes","Twice a week, 10 minutes","Daily, 5 minutes","Once a month, 1 hour"], correct:1, exp:"BIXEPS sessions run twice a week for just 10 minutes, with minimal supervision needed."},
+    {q:"Through which channel is formal GAI training funded for staff?", opts:["Personal expense claims","The Company Training Committee (CTC)","AIC's direct grant","No funding — self-study only"], correct:1, exp:"Formal GAI training is funded through the Company Training Committee (CTC)."}
+  ], groups:[
+    {heading:"Making operations more data-driven", items:["Moving toward AIC-whitelisted IT systems that analyse seniors' vital signs, attendance and interest patterns to flag anomalies early, rather than waiting for the 6-monthly health assessment","A Task Management Software (TMS) automates attendance-taking, registration (via Microsoft Booking, email or WhatsApp) and multi-language reminder messages before each activity","Flexible staffing: simpler tasks that don't need a care background are shifted to part-time staff, freeing full-time care staff for their core work"]},
+    {heading:"Equipment innovation", items:["Fall/activity detection sensors (with partner rizHomes) alert a senior's NOK to falls or unusual drops in activity — installed free for vulnerable, stay-alone seniors","Robotic tuina — a pain-management technique — is being explored with NTU to ease the manpower burden of manual tuina","BIXEPS machines build lower-limb strength, balance and gait speed in just 10 minutes, twice a week, with minimal staff supervision","The Neeuro SenzeBand is being evaluated as a self-administered device for relaxation, mindfulness and stress management, to extend limited mental-wellness programme capacity"]},
+    {heading:"Where Generative AI fits in", items:["Seen as a way to widen the range of programmes offered (art/music therapy, companionship chatbots, memory-triggering content, digital skills classes) without a matching rise in staff time","Staff upskilling runs on two tracks: hosting student tech developers at the centre for hands-on exposure, and formal GAI training funded through the Company Training Committee (CTC)"]},
+    {heading:"Continuous improvement culture", items:["An Annual Innovation and Creativity Challenge gives staff space to pitch and try new ideas outside their usual role","From CY2025, TCFS plans to set aside 10% of staff time for staff-led ideation and improvement projects"]},
+  ]},
+{ id:31, module:"SEEN Service Model & Operations", tag:"Collaborations", tagClass:"tag-sage", title:"Community Collaborations & Health System Links",
+  intro:"The wider network of partners and healthcare touchpoints that make the ASCEND model work in practice.",
+  facts:[],
+  quiz:[
+    {q:"Roughly how many TCFS care partners sit within 2km of the Bukit Batok centre?", opts:["Fewer than 5","More than 10","Around 50","Over 100"], correct:1, exp:"More than 10 care partners sit within about 2km of Bukit Batok alone."},
+    {q:"Which hospital partners with Community Nurses at Nanyang, versus Bukit Batok?", opts:["NUH at Nanyang, St Luke's at Bukit Batok","St Luke's at Nanyang, NUH at Bukit Batok","NUH at both","Neither — not hospital-linked"], correct:0, exp:"National University Hospital partners at Nanyang; St Luke's Hospital partners at Bukit Batok."},
+    {q:"What does the Social Prescription Programme with NUH/NUP aim to do?", opts:["Replace medication with social activities","Refer recovering seniors to the AAC to speed recovery through social/physical activity","Prescribe AAC membership fees","Fund seniors' medical bills"], correct:1, exp:"It refers recovering seniors to the AAC to support recovery through social and physical activity."}
+  ], groups:[
+    {heading:"Local community network", items:["More than 10 TCFS care partners sit within about 2km of the Bukit Batok centre alone","Bread is collected twice weekly from BreadTalk and Oishii outlets for distribution to seniors","Partnerships extend to eye-care (free spectacles), youth groups (Heartware, digital workshops), and community food donors (e.g. local temples) for communal meals"]},
+    {heading:"Regional Health System (RHS) integration", items:["Community Nurses are deployed at the AACs once a week (with National University Hospital at Nanyang, and St Luke's Hospital at Bukit Batok), reviewing 6-14 residents per session — most are new members flagged through Community Screening","A Social Prescription Programme with NUH/NUP refers recovering seniors to the AAC to speed up recovery through social and physical activity — care coordinators attend a 1-day training and stay in the loop on progress","Seniors on this programme are tracked every 6 months across both Tzu Chi's indicators (BP, weight/BMI, grip strength, SPPB tests) and NUP's (chronic disease and cancer screening, vaccinations)"]},
+    {heading:"Specialist care models in development", items:["ENCODE (Enhanced Collaboration for Older adults with Dementia) — a multidisciplinary team (doctor, dementia case manager, medical social worker, physio, OT, pharmacist, AAC staff) being developed with NUHS to better support seniors with dementia and their caregivers","Participation in NTFGH's Interdisciplinary Group (IDG) — an early-intervention case-management platform aligning medical, social and grassroots partners around shared care goals"]},
+    {heading:"On-site clinical services", items:["A physiotherapy team is on duty one day a week at the AAC for chronic pain (back, neck, knees); more intensive cases are referred to the Day Rehabilitation Centre at Jurong East","On-site TCM services (popular with minority-race seniors) treat pain in the back, neck, shoulders, knees and ankles, and share healthy-living tips during communal meals"]},
+  ]},
+{ id:21, module:"SEEN Service Model & Operations", tag:"Vital Signs", tagClass:"tag-clay", title:"Vital Signs & Escalation Protocol",
+  intro:"What to check, and exactly when a reading means you call 995 instead of just logging it.",
+  facts:[{num:"995", lab:"Call immediately for any red-flag symptom"}],
+  quiz:[
+    {q:"A senior's BP reads 135/85. What band does this fall into, and what's the guidance?", opts:["Normal — just log it","Borderline — advise a screening if not on treatment","High — re-check after the BP checklist","Hypertensive Crisis — doctor immediately"], correct:1, exp:"135/85 falls in the Borderline band (130-139/80-89), prompting a screening recommendation if untreated."},
+    {q:"Which of these is NOT one of the three vitals every AAC must be able to measure?", opts:["Blood pressure","Heart rate","Weight","Blood glucose"], correct:3, exp:"The three required vitals are blood pressure, heart rate, and weight — not blood glucose."},
+    {q:"A senior suddenly can't move one side of their body. Which red-flag category does this fall under?", opts:["Sudden dizziness, numbness, weakness or vision change","Continuous vomiting","Chest tightness only","This isn't a listed red flag"], correct:0, exp:"Sudden weakness/numbness is a listed red-flag symptom requiring an immediate 995 call."}
+  ],
+  groups:[
+    {heading:"Vitals every AAC must be able to measure", items:["Blood pressure","Heart rate","Weight"]},
+    {heading:"Red-flag symptoms — call 995 immediately", items:["Sudden or severe pain, including chest pain","Breathing difficulties or shortness of breath","Sudden confusion or disorientation","Sudden dizziness, numbness, weakness or vision change","Uncontrolled bleeding of any kind","Coughing or vomiting blood","Continuous vomiting or diarrhoea"]},
+    {heading:"Blood pressure ranges and what to do", items:["Normal (90-129 / 60-79): log in HealthHub, continue routine follow-up","Borderline (130-139 and/or 80-89): if not on treatment, advise a health screening and doctor follow-up","High (≥140 and/or ≥90) or Extremely High (≥160 and/or ≥100): re-check after the BP checklist, then follow guidance for the new reading","Low (<90 and/or <60): advise the senior to see a doctor immediately","Hypertensive Crisis (≥180 and/or ≥110): advise the senior to see a doctor immediately"]},
+  ],
+  reference:{note:"Full protocol, including the BP checklist referenced above, is in the AAC Service Operations Guide.", docs:["AAC Service Operations Guide Version 5.0.pdf — Section 9"]}
+},
+{ id:22, module:"SEEN Service Model & Operations", tag:"Manpower & Training", tagClass:"tag-gold", title:"Manpower, Training & Retention",
+  intro:"Where staff come from, and the training pathway they follow once they're in.",
+  facts:[{num:"~60%", lab:"AAC staff who started as Tzu Chi volunteers"}],
+  quiz:[
+    {q:"Which training pathway is most associated with mid-careerists joining AAC roles?", opts:["SUSS NIE301 placements","e2i's Career Conversion and Place-and-Train programmes","Tzu Chi University internships","Republic Polytechnic alumni track"], correct:1, exp:"Mid-careerists typically join via e2i's Career Conversion and Place-and-Train programmes."},
+    {q:"How is staff performance formally reviewed under the competency framework?", opts:["Annually, by the Centre Manager alone","Six-monthly, by supervisors, peers and self-evaluation","Quarterly, by AIC","Only upon request"], correct:1, exp:"Performance evaluation happens six-monthly, involving supervisors, peers, and self-evaluation."},
+    {q:"Which AIC Annex B course specifically trains staff to raise or receive befriending referrals?", opts:["Community Screener Training","IRMS e-Training (Befriending)","Introduction to Social Connector","Essential Foundation in Volunteer Management"], correct:1, exp:"IRMS e-Training (Befriending) is for staff raising or receiving befriending referrals."}
+  ],
+  groups:[
+    {heading:"Where staff come from", items:["Tzu Chi volunteers (about 60% of AAC staff started this way)","Republic Polytechnic alumni and interns (Fitness & Nutrition focus)","Tzu Chi University graduates and interns","Mid-careerists, via e2i's Career Conversion and Place-and-Train programmes","Retirees, taking on lower-complexity part-time roles","SUSS NIE301 community-learning students"]},
+    {heading:"Core training courses for care staff", items:["Certificate in Support Care (Community Care) — 12 weeks","Basic Case Management Workshop — 4 days","Geriatric Case Management (Intermediate) — 3 days","Community Befriending Course (Basic) — 15 hours","Essential Foundation in Volunteer Management — 8 hours","Community Screener — 16 hours","Self-Care for Community Care Professionals — 8 hours","Introduction to Social Connector for Social and Lifestyle Interventions — 12 hours"]},
+    {heading:"Competency assessment framework", items:["Cultivation of values — compassion, gratitude, respect, love, through coaching and mentorship","Core competencies — geriatric health, communication, empathetic care, assessed by AIC-approved partners","Professional development — ongoing upskilling against AIC's Community Care Standards","Performance evaluation — reviewed six-monthly, by supervisors, peers, and self-evaluation"]},
+    {heading:"AIC's own recognised course list (Annex B)", items:["Community Screener (CS) Training — for staff who conduct the CS","Community Befriending for Seniors (CBS) — for staff providing or managing Befriending/Buddying","Essential Foundation in Volunteer Management (VM) — for staff managing volunteers","IRMS e-Training (Befriending) — for staff raising or receiving befriending referrals","Community-based Vital Signs Monitoring (CBVSM) — for staff assisting with vital signs","Introduction to Social Connector Course (SC) — for staff integrating health and social care","All direct client-facing staff must attend at least 1 relevant training a year"]},
+    {heading:"Applying for training", items:["Course applications go through Frontier eHR, with approval from your first-line manager"]},
+  ]},
+{ id:23, module:"SEEN Service Model & Operations", tag:"Hygiene", tagClass:"tag-ink", title:"Hygiene & Facilities",
+  intro:"The cleaning discipline behind a centre that's safe for a frail, elderly population — broken down by area, since the standard isn't the same everywhere.",
+  facts:[{num:"2x daily", lab:"High-touch surface disinfection"},{num:"6 mo", lab:"Thorough clean & disinfection cycle"}],
+  quiz:[
+    {q:"How often is medical/rehab equipment cleaned and disinfected, per the checklist?", opts:["Only during the 6-monthly deep clean","Weekly","After every single use","Only when visibly dirty"], correct:2, exp:"Medical/rehab equipment is cleaned and disinfected after every use, on top of the 6-monthly deep clean."},
+    {q:"Which area is checked on 'Day 3' of the rotating daily inspection schedule?", opts:["Kitchen and Dining Area","Rehabilitation/Isolation Room","Toilets and bin-holding areas","Office and storage area"], correct:1, exp:"Day 3 covers the Rehabilitation/Isolation Room."},
+    {q:"What's mandatory about the table-top cleaning system in the food area?", opts:["A single reusable cloth all day","A 2-cloth system with regularly changed cloths and rinse water","Disposable wipes only","No specific system is mandated"], correct:1, exp:"A 2-cloth table-top cleaning system is mandatory, with cloths and rinse water changed regularly."},
+    {q:"On what day of the month does the pest control operator typically conduct its survey?", opts:["The first Monday","The third Wednesday","The last Friday","No fixed schedule"], correct:1, exp:"Pest surveys are typically conducted on the third Wednesday of each month."}
+  ],
+  groups:[
+    {heading:"Reception & activity area", items:["Floor: disinfected twice daily, plus spot-cleaning as needed","Reception counter, signage, access card reader, glass door, walls and ceiling: inspected daily and spot-cleaned; a thorough clean/disinfection every 6 months","Tables & chairs: spot-cleaned daily, with a full clean/disinfection weekly — rarely-used furniture is cleaned before and after each use","Fans, light fittings and shared activity kits/equipment: cleaned after each use, thorough clean every 6 months (quarterly for fans/lights)","Bins: cleared and wiped daily; checked for damage and washed out quarterly"]},
+    {heading:"Toilets", items:["Floor, urinals/toilet bowls, flush panels, wash basins and door handles: disinfected twice daily","Cubicle walls and doors: disinfected at least once daily","Mirrors: cleaned and wiped daily","Sanitary bins: cleared/wiped daily, with a full clean weekly","Every fixture also gets a thorough clean/disinfection every 6 months"]},
+    {heading:"Medical rooms (Rehab/Isolation)", items:["Floor disinfected twice daily; walls, ceiling and windows inspected daily and spot-cleaned","Walking aids, wheelchairs, rehab and medical equipment are cleaned and disinfected after every single use — not just on a routine schedule","Everything gets a thorough clean/disinfection every 6 months on top of that"]},
+    {heading:"Food area & kitchen", items:["Dining floor, tables and chairs: disinfected twice daily; tables promptly cleared of crockery","The 2-cloth table-top cleaning system is mandatory — cloths and rinse water must be changed regularly, not reused all day","Food preparation area/tabletop: disinfected twice daily; food storage area cleaned at least once daily","Sink: checked for chokages quarterly; kitchen bins cleaned and disinfected daily"]},
+    {heading:"Staff areas & storage", items:["Office/meeting room floor and doorknobs: disinfected daily","High-touch office items — computers, phones, printers, photocopiers, shelves, cabinets — disinfected twice daily","Storage areas, lockers and the laundry/linen area: cleaned daily, thorough clean every 6 months","Air-handling units inspected every 6 months; air ducts inspected every 12 months"]},
+    {heading:"Daily inspection rotation", items:["At least 10% of all listed areas are visually inspected daily — not the whole centre, but a rotating slice of it","Day 1: External compound · Day 2: Toilets & bin-holding areas · Day 3: Rehab/Isolation room · Day 4: Kitchen & dining area · Day 5: Office, storage & meeting rooms · Day 6: Activity/reception area","Inspection records are filed for audit purposes"]},
+    {heading:"Pest management", items:["A comprehensive pest survey is conducted at least every 6 months","Routine treatment and inspection happens monthly, typically on a fixed day each month (e.g. the third Wednesday)","Covers mosquito/rodent inspection with fogging and oiling, plus ant/cockroach prevention","Termite treatment is carried out as and when required","Extra checks target bin centres, under-sink areas, and wooden infrastructure"]},
+    {heading:"Amenities that must always be available", items:["Toilet paper, liquid hand soap, and paper towels or a hand dryer","Working sanitary fittings — flush, taps, pipes","No stagnant water anywhere on the premises, to prevent mosquito breeding"]},
+    {heading:"Facility bookings — Karaoke Room", items:["Bookable Wednesdays and Saturdays, 1.30-4.30pm and 9.30-11.30am","$3 per person per hour, or $20 per room for a 2-hour group booking (up to 6 pax)","Minimum booking is 2 pax; a solo booking is allowed but loses priority if another 2+ pax group wants the same slot","No food or drinks inside except bottled beverages, to avoid spills","Users are responsible for any damage, charged at sign-out"]},
+  ],
+  reference:{note:"Full cleaning schedule by area (floors, walls, equipment, toilets, kitchen etc.) is in the Cleaning Checklist.", docs:["Cleaning Checklist.pdf"]}
+},
+
+{ id:24, module:"KPIs, Surveys & Reference Library", tag:"Official KPIs", tagClass:"tag-gold", title:"Official AIC KPI Targets",
+  intro:"The formal AIC targets behind the ToR's compliance section — useful when you need the exact wording or a tiered target.",
+  facts:[{num:"50%", lab:"Seniors with ≥2 touchpoints with the AAC in the FY"},{num:"85%", lab:"Satisfaction target across most survey KPIs"}],
+  quiz:[
+    {q:"What's the Tier 6 target for seniors attending ≥2 AAPs in person?", opts:["15%","20%","25%","30%"], correct:3, exp:"Tier 6's target is 30% — the highest of the tiered targets (15/20/25/30% for Tiers 3-6)."},
+    {q:"By when is the AAC touchpoints target prorated lower, for a centre still in its early years?", opts:["Its first year only","Its first 2 years","Its first 5 years","Never prorated"], correct:1, exp:"The touchpoints target is prorated lower for a centre's first 2 years of operation."},
+    {q:"Which of these premises uses would breach the official restriction on centre space?", opts:["Running a Healthier SG screening","Hosting a commercial sale unrelated to AAC services","A CHP session","A communal meal"], correct:1, exp:"Centre space can't be used for anything unrelated to AAC services, including unrelated commercial activity."},
+    {q:"What must happen before AIC is informed of a data breach, per the official Service Requirements?", opts:["Nothing — AIC is told first","HQ's approval","A police report","Publishing a notice"], correct:1, exp:"HQ's approval must come before AIC is informed of a data breach."}
+  ],
+  groups:[
+    {heading:"Active Ageing", items:["% of assigned seniors attending ≥2 AAPs in person: target rises by tier — 15% (Tier 3) up to 30% (Tier 6)","≥50% of assigned seniors with 2+ touchpoints with the AAC in the FY (prorated lower in a centre's first 2 years)","≥85% satisfaction with active ageing/socio-recreational programmes, by FY2025","Programmes must run in at least 4 of 5 domains (social, cognitive, physical, learning, volunteerism) — communal meals under social is mandatory"]},
+    {heading:"Befriending & Buddying", items:["≥30% of BnB seniors participate in at least 1 active ageing/socio-recreational programme a month","≥85% of surveyed BnB seniors report feeling well supported"]},
+    {heading:"Information & Referral / Social Connector / Community Screening (2S)", items:["≥85% of seniors surveyed report satisfaction with I&R, Social Connector or Community Screening assistance"]},
+    {heading:"Ground-up Initiatives (GUI)", items:["At least 24 sessions delivered by GUI partners in the FY","At least 160 unique seniors served, within the AAC's service boundary"]},
+    {heading:"Good to know", items:["A senior counts as \"outreached\" after 2 successful face-to-face or virtual interactions","The Community Screener (CS) stays valid for up to 2 years from administration","AACs may never turn away a senior regardless of their home address"]},
+    {heading:"Services that can never be charged for", items:["Outreach","Membership at the AAC","Befriending and Buddying","Information and Referral","Monitoring and response to AAS calls","Social Connector for Social and Lifestyle Interventions","Community Screening","For anything else, seniors must be told the fees/charges/deposits upfront, with affordability in mind"]},
+    {heading:"Staying politically neutral", items:["AACs can't collaborate with, or accept/give donations to, any political party","Staff can't engage in or endorse political activity while acting in their AAC role — no political attire, logos, or posters","Centre premises can't be used for political purposes","This doesn't stop AACs sharing programme info with MPs or grassroots advisers in their normal official capacity"]},
+    {heading:"Record keeping", items:["Retain documentation and records relating to AAC services for at least 5 years after the end of the FY they relate to","Any data breach (actual, potential, or suspected) must be reported to MOH immediately"]},
+  ]},
+{ id:25, module:"KPIs, Surveys & Reference Library", tag:"Surveys", tagClass:"tag-sage", title:"Client Satisfaction Surveys",
+  intro:"Three standard surveys measure how seniors experience the centre's services.", facts:[],
+  quiz:[
+    {q:"Which survey specifically covers whether the right assistance was given, and whether it was timely?", opts:["Active Ageing Programme survey","Assistance Rendered by AACs survey","Befriending/Buddying survey","There's no such survey"], correct:1, exp:"The Assistance Rendered by AACs survey covers whether the right, timely assistance was given."},
+    {q:"About how long does a satisfaction survey typically take to administer?", opts:["2 minutes","10 minutes","30 minutes","1 hour"], correct:1, exp:"Surveys take about 10 minutes to administer."},
+    {q:"What must be obtained before starting any satisfaction survey?", opts:["Payment","The senior's consent to participate","A doctor's note","AIC's sign-off"], correct:1, exp:"The senior's consent must be obtained before starting the survey."}
+  ],
+  groups:[
+    {heading:"The three surveys", items:[{text:"Active Ageing Programme", sub:["Given to seniors who've participated for at least 3 months","Covers activity quality, variety, staff helpfulness, and whether they'd recommend the centre"]},{text:"Assistance Rendered by AACs", sub:["Given after a senior receives I&R, booking assistance, or vital-signs monitoring support","Covers whether the right assistance was given, and whether it was timely"]},{text:"Befriending / Buddying", sub:["Given to seniors receiving BnB for at least 3 months","Covers session quality, access to centre activities, satisfaction with their befriender/buddy, and whether they now have more people to call on"]}]},
+    {heading:"How to administer them", items:["Preferably given by a staff member or volunteer who did not directly provide the service, to reduce bias","Always get the senior's consent to participate before starting","Takes about 10 minutes"]},
+  ]},
+{ id:26, module:"KPIs, Surveys & Reference Library", tag:"Reference Library", tagClass:"tag-clay", title:"Reference Library",
+  intro:"Documents you'll need but won't necessarily read cover-to-cover — know that they exist, and where to find them.", facts:[],
+  quiz:[
+    {q:"How many themes does the Manager/Assistant Manager e2i Training Development Plan cover?", opts:["2","4","6","8"], correct:1, exp:"It moves through 4 themes across its 12-month structure."},
+    {q:"What kind of guide is the iNGOT/Frontier eHR SOP best used as?", opts:["A cover-to-cover manual to read once","A click-by-click reference for the first few times doing a task","A historical record only","It's not meant to be used operationally"], correct:1, exp:"It's best used as a click-by-click reference the first few times you perform each system task."}
+  ],
+  groups:[
+    {heading:"Service boundary & postal codes", items:["Bukit Batok (Centre ID AAC23146) and Nanyang (Centre ID AAC24170) each have an AIC-issued list of postal codes defining their assigned service boundary","These files supplement AIC's Letter of Award and are confidential — they shouldn't be shared or reproduced without AIC's consent"]},
+    {heading:"Manager / Executive training pathway", items:["A separate 12-month e2i Training Development Plan exists for Community Care Managers and Assistant Managers","It moves through 4 themes: Community Care Management fundamentals, Programme Development & Quality, HR & Staff Development, and Operational Management"]},
+    {heading:"System how-to guide (iNGOT / Frontier eHR)", items:["A dedicated, screenshot-heavy SOP walks through core system tasks: membership registration, attendance & vital signs, event setup, the Alarm Alert System, opening/closing the centre, AED locations, fire safety and more","Best used as a click-by-click reference the first few times you do each task, rather than read start to finish"]},
+  ],
+  reference:{note:"All of the above are kept in the team drive. Ask your Centre Manager for access if you don't have it yet.", docs:["Postal Codes for AAC-BB and NY (xlsx)","TCF_e2i Training Development Plan & Training Plan (pdf)","TCF_zOnboarding Standard Operating Procedure (pdf)"]}
+},
+
+{ id:27, module:"SEEN Service Model & Operations", tag:"Daily Checklists", tagClass:"tag-sage", title:"Opening & Closing the Centre",
+  intro:"The routine that bookends every operating day.", facts:[],
+  quiz:[
+    {q:"After arming the alarm at closing time, how long is the window to exit before it's fully armed?", opts:["15 seconds","30 seconds","45 seconds","2 minutes"], correct:2, exp:"There's a 45-second window to exit after arming the alarm."},
+    {q:"What's one of the very first tasks when opening the centre in the morning?", opts:["Take seniors' vital signs","Roll up the shutter and unlock the glass door","Switch off all lights","Lock the karaoke room"], correct:1, exp:"Rolling up the shutter and unlocking the glass door is one of the very first opening tasks."}
+  ],
+  groups:[
+    {heading:"Opening the centre", items:["Roll up the shutter and unlock the glass door","Disarm the alarm by tapping your passkey and pressing OK","Turn on lights in the reception area and flip the signage to \"open\"","Switch on lights, fans and air-con in every hall and the office","Check for any alarms triggered overnight","Move chairs out for morning exercises","Take seniors' vital signs and log them in iNGOT"]},
+    {heading:"Closing the centre", items:["Confirm all doors and windows are locked, and switch off lights/appliances in the office","Check the karaoke room/MFR: power, mics, fan and air-con off, windows closed, then lock it","Switch off all air-con units, fans, TV, and charging devices centre-wide","Shut down computers and the company mobile phone properly","Arm the alarm with your card, press OK, and exit within the 45-second window","Flip the signage to \"closed\" and confirm the shutter is fully rolled down"]},
+  ]},
+{ id:28, module:"SEEN Service Model & Operations", tag:"Fire & Emergency", tagClass:"tag-clay", title:"Fire Safety, AED & Emergency Numbers",
+  intro:"Know these locations and numbers before you need them, not after.",
+  facts:[{num:"995", lab:"Fire engine / ambulance"},{num:"999", lab:"Police"}],
+  quiz:[
+    {q:"Which number should be used to report a fire hazard, rather than an active emergency?", opts:["995","1777","1800 280 0000","999"], correct:2, exp:"1800 280 0000 is for fire hazard reporting, distinct from the 995 emergency line."},
+    {q:"Where's the second AED location at Nanyang, besides 714 Nanyang Sapphire?", opts:["712 Jurong West Fire Post, Level 1 Front Desk Area","230 Level 1, Lift Lobby B","Ground floor carpark","Inside the centre pantry"], correct:0, exp:"The second NY AED is at 712 Jurong West Fire Post, Level 1 Front Desk Area."},
+    {q:"Which number is for sending a police emergency SMS?", opts:["999","71999","1777","1800 286 5555"], correct:1, exp:"71999 is the police emergency SMS number, distinct from calling 999."}
+  ],
+  groups:[
+    {heading:"Emergency numbers", items:["995 — Fire engine / Ambulance (emergency)","1777 — Non-emergency ambulance","999 — Police (emergency)","71999 — Police emergency SMS","1800 280 0000 — Fire hazard reporting","1800 286 5555 — General enquiries"]},
+    {heading:"AED locations", items:[{text:"Bukit Batok (BB)", sub:["230 Level 1, Lift Lobby B","219 Level 1, Lift Lobby B"]},{text:"Nanyang (NY)", sub:["714 Nanyang Sapphire, Level 1, Lift Lobby A","712 Jurong West Fire Post, Level 1 Front Desk Area"]}]},
+    {heading:"Fire safety checklist highlights", items:["Smoke detectors installed and regularly tested, with batteries replaced as needed","Fire extinguishers accessible, inspected and maintained","Emergency exits clearly marked, unobstructed, and openable without keys","Regular fire drills held, with records kept to identify improvements","Clear procedures for assisting residents with limited mobility during an evacuation","All staff know the locations of fire exits, extinguishers and emergency equipment"]},
+  ]},
+{ id:29, module:"Care Referral Process", tag:"Community Screening", tagClass:"tag-ink", title:"Five Steps & Community Screening (NUP Referrals)",
+  intro:"The specific intake process for referrals from National University Polyclinics (NUP), and for Share-a-Pot / Eat Well Age Well members.", facts:[],
+  quiz:[
+    {q:"For a NUP-referred senior in an eligible zone, which document(s) are required beyond the PDPA form?", opts:["Nothing else","The Five Steps and Community Screening","Only a doctor's letter","A financial means test"], correct:1, exp:"Eligible-zone NUP referrals need both the Five Steps and Community Screening, on top of the PDPA form."},
+    {q:"Which zone's blocks specifically include 'The Jade' as part of the CS requirement area?", opts:["Zone 8","Zone 9","Zone 12","Zone 15"], correct:2, exp:"Zone 12 includes The Jade among its listed blocks requiring Community Screening."},
+    {q:"For a general new member outside the specific referral sources, what's actually required?", opts:["Just the PDPA form","The Five Steps only","Community Screening only","Both the Five Steps and CS"], correct:0, exp:"Most new members only need the PDPA form — the Five Steps aren't required by default."}
+  ],
+  groups:[
+    {heading:"The process", items:["1. Register new membership in iNGOT","2. Get the new referral to sign the PDPA consent form (required for every new member)","3. For NUP, Share-a-Pot and Eat Well Age Well referrals only — complete the Five Steps",{text:"The Five Steps", sub:["Blood pressure, weight and height","Grip Strength (start with the left hand first if the senior is left-handed)","Functional Reach Test (FRT)","Chair Stand Test (CST)","Balance Test — side-by-side, semi-tandem, and tandem","Gait Speed Test"]},"4. Participate in Community Screening (CS) as advised by NUP"]},
+    {heading:"Who actually needs the Five Steps + CS", items:["Most new members only need the PDPA form — the Five Steps aren't required by default","Members living in specific zones (blocks in Zones 8, 9 and 12 around Bukit Batok) need both the PDPA form and Community Screening"]},
+  ]},
+
+{ id:32, module:"SEEN Service Model & Operations", tag:"AAPF Standards", tagClass:"tag-gold", title:"Active Ageing Programme Framework — Domain Checklists",
+  intro:"AIC's minimum baseline standard for what counts as a proper Active Ageing Programme in each of the 5 domains. Use this when planning or reviewing a programme, not just when reporting KPIs.",
+  facts:[{num:"30 min", lab:"Minimum length of a physical activity"},{num:"45 min", lab:"Minimum length of a cognitive activity"}],
+  quiz:[
+    {q:"Under the Physical domain checklist, what applies once more than 5 CFS 4-5 seniors are in an activity?", opts:["No specific extra ratio applies","1 trained professional, with extra support strongly encouraged","2 professionals per senior","CFS 4-5 seniors are excluded"], correct:1, exp:"1 trained professional per activity is required, with extra support strongly encouraged past 5 frail seniors."},
+    {q:"Under the Cognitive domain checklist, what's the maximum group size per trainer for CFS 4-5 seniors?", opts:["4 clients","8 clients","12 clients","No limit"], correct:1, exp:"Groups should be kept small — up to 8 clients per trainer — for CFS 4-5 seniors."},
+    {q:"Which of these topics falls under the Learning domain's required coverage?", opts:["Communal meal planning","End-of-life issues such as ACP/LPA","Wheelchair safety","Fire evacuation drills"], correct:1, exp:"End-of-life issues (ACP/LPA) is one of the Learning domain's required topic areas."},
+    {q:"Under Volunteerism, which type of volunteering is described as 'ad hoc', like ushering?", opts:["Service-based","Skills-based","Events-based","Continuous-based"], correct:2, exp:"Events-based volunteering (e.g. ushering) is ad hoc, unlike the regular service-based or as-needed skills-based types."}
+  ],
+  groups:[
+    {heading:"Physical", items:["Every physical activity must run at least 30 minutes and include aerobics, strength, balance and/or flexibility (with warm-up/cool-down)","All participants complete HPB's Get Active Questionnaire annually, and get a wellness check before each session","Have an emergency response plan ready (e.g. calling 995) for falls, breathlessness, or feeling unwell","At least one on-duty staff member should ideally hold a One Man CPR certificate and know how to use the AED and perform the Heimlich manoeuvre","Check equipment condition and the activity area for hazards (flooring, lighting, clutter, exposed wires) before each session",{text:"Extra care for seniors with a Clinical Frailty Scale (CFS) of 4-5", sub:["1 trained professional per activity, with extra support strongly encouraged once more than 5 frail seniors are involved","Build in rest breaks during the activity"]}]},
+    {heading:"Cognitive", items:["Runs at least 45 minutes and targets at least 1 of 5 cognitive components: processing speed, memory, attention, executive function, or cognitive flexibility","Identify participants' interests and goals before planning the activity","For CFS 4-5 seniors: keep groups small (up to 8 clients per trainer), group similar abilities together, give consistent session structure, and watch safety with sharps/soil-based materials"]},
+    {heading:"Social", items:["Communal meals are mandatory at least once a week — this is the one non-negotiable activity in the social domain","Activities should genuinely stimulate participants' interests and create real opportunities to interact, not just co-exist in the same room"]},
+    {heading:"Learning", items:["Must be organised at least once a month, covering: end-of-life issues (ACP/LPA), financial adequacy/literacy, health literacy & ageing, health education & wellness, emotional & mental wellness, or productive longevity","Use senior-friendly materials — larger fonts, colour coding, hard copies for those uncomfortable with digital content","Let seniors learn at their own pace, with room to recap or share takeaways at the end"]},
+    {heading:"Volunteerism", items:["Volunteering opportunities must be offered at least once a quarter","Three types: service-based (regular, e.g. befriending), skills-based (as-needed, e.g. web design), and events-based (ad hoc, e.g. ushering)","Match opportunities to seniors' interests/skills, and provide adequate training and supervision if the AAC runs the programme itself"]},
+  ]},
+
+{ id:33, module:"KPIs, Surveys & Reference Library", tag:"Training Curricula", tagClass:"tag-sage", title:"Staff Training Curricula (Manager / Executive / Fitness Tracks)",
+  intro:"Three parallel 6-month onboarding curricula run depending on your role — each week pairs on-the-job training with a themed focus area.",
+  facts:[{num:"6 mo", lab:"Length of each track"}, {num:"3", lab:"Parallel tracks: Manager, Executive/Associate, Fitness"}],
+  quiz:[
+    {q:"In the Executive/Associate track, which theme is covered in Month 3?", opts:["Foundation skills","Specialised care — dementia, palliative, disability, mental health","Certification & recognition","Interdisciplinary team collaboration"], correct:1, exp:"Month 3 of the Executive/Associate track covers specialised care topics."},
+    {q:"In the Fitness track, what's the Month 2 focus?", opts:["Foundation protocols","Personal training techniques","Group fitness leadership","Continuous improvement"], correct:1, exp:"Month 2 of the Fitness track focuses on personal training techniques."},
+    {q:"Roughly what share of the Certificate in Support Care's fees is government-funded for Singaporeans/PRs?", opts:["~50%","~70%","~90%","0% — fully self-funded"], correct:2, exp:"The course is around 90% government-funded for Singaporeans/PRs."}
+  ],
+  groups:[
+    {heading:"Manager / Assistant Manager track — monthly themes", items:["Month 1: Community Care Management fundamentals, leadership & team management, strategic planning, financial management basics","Month 2: Programme development & evaluation, quality improvement, compliance & regulatory management, stakeholder engagement","Month 3: Recruitment & selection, performance management & feedback, staff training & development, employee engagement & wellness","Month 4: Workflow optimisation, resource allocation, technology integration, crisis management & continuity planning","Month 5: Community needs assessment, outreach & education, advocacy & policy influence, collaborative partnerships","Month 6: Programme evaluation & impact assessment, reflective practice, professional networking & development planning"]},
+    {heading:"Executive / Associate track — monthly themes", items:["Month 1: Foundation skills — intro to community care, communication skills, safety & infection control, basic care skills","Month 2: Client needs assessment, care planning & documentation, cultural sensitivity, professionalism & ethics","Month 3: Specialised care — dementia care, palliative care, disability support, mental health awareness","Month 4: Advanced skills — medication management, wound care & rehab, diabetes management, advanced communication","Month 5: Interdisciplinary team collaboration, case management & advocacy, crisis intervention & mental health first aid, ethical decision-making","Month 6: Certification & recognition, continuing education & professional development"]},
+    {heading:"Fitness track — monthly themes", items:["Month 1: Foundation protocols, fitness assessment & programme design","Month 2: Personal training techniques","Month 3: Group fitness leadership","Month 4: Communication and education","Month 5: Progress monitoring and feedback","Month 6: Continuous improvement and collaboration"]},
+    {heading:"External courses new hires take (Months 1-5)", items:["Certificate in Support Care (Community Care) — 12 weeks, ~90% government-funded for Singaporeans/PRs","Basic Case Management Workshop — 4 days","Geriatric Case Management (Intermediate) — 3 days","Community Befriending Course (Basic) — 15 hours","Essential Foundation in Volunteer Management — 8 hours","Community Screener — 16 hours","Self-Care for Community Care Professionals — 8 hours","Introduction to Social Connector for Social and Lifestyle Interventions — 12 hours","New hires are buddied with an experienced peer to help build competency alongside the formal courses"]},
+  ]},
+];
+
+const QUIZ_BANK = [
+  // ---- Terms of Reference ----
+  {module:"Terms of Reference", q:"A senior is classified as Robust. Counting only what the KPI table requires, how many APPs must they complete alongside their screening?", opts:["2 APPs","6 APPs","12 APPs","24 APPs"], correct:0, exp:"Robust Seniors require 2 APPs plus a Health/Functional Screening — the lightest of the four targets."},
+  {module:"Terms of Reference", q:"A senior has been assessed as Frail rather than Robust. What's their minimum APP requirement under the compliance KPIs?", opts:["2 APPs","6 APPs","12 APPs","24 APPs"], correct:1, exp:"Frail Seniors require 6 APPs plus a Health/Functional Screening — three times the Robust target."},
+  {module:"Terms of Reference", q:"A senior is receiving Befriending (not Buddying). How many APPs must they complete to meet the KPI?", opts:["2 APPs","6 APPs","12 APPs","24 APPs"], correct:2, exp:"Befriending requires 12 APPs — double the Buddying target, since it serves seniors with more risk factors."},
+  {module:"Terms of Reference", q:"A senior is receiving Buddying rather than Befriending. What's their APP target?", opts:["2 APPs","6 APPs","12 APPs","24 APPs"], correct:1, exp:"Buddying requires 6 APPs — the same number as the Frail Senior target, so don't confuse the two."},
+  {module:"Terms of Reference", q:"A befriender makes two unsuccessful contact attempts with a senior within the same month. How should this be treated for BnB documentation purposes?", opts:["As a missed target requiring escalation to HQ","As equivalent to one successful attempt","As two separate incidents to log in CaritaHub","It doesn't need to be documented at all"], correct:1, exp:"Two unsuccessful attempts are recorded as fulfilling one successful attempt — but the attempts still need documenting."},
+  {module:"Terms of Reference", q:"Which pair of figures correctly states the Ground-up Initiative (GUI) KPI targets for a financial year?", opts:["24 sessions delivered, 160 unique seniors served","160 sessions delivered, 24 unique seniors served","30 sessions delivered, 100 unique seniors served","24 sessions delivered, 100 unique seniors served"], correct:0, exp:"GUI requires at least 24 sessions and at least 160 unique seniors served within the service boundary."},
+  {module:"Terms of Reference", q:"A senior mentions unintentional weight loss and seems unsteady on her feet, but shows no memory issues. Who should this be referred to?", opts:["Community Nurse","Viriya","TCM or Rehab","Integrated Community Care Partnership only"], correct:0, exp:"Fall risk and undernourishment are routed to the Community Nurse; dementia risk goes to Viriya, and pain goes to TCM/Rehab."},
+  {module:"Terms of Reference", q:"A senior shows early signs of memory lapses and disorientation, with no physical complaints. Who handles this referral?", opts:["Community Nurse","Viriya","TCM or Rehab","AIC directly"], correct:1, exp:"Dementia-risk cases are referred to Viriya, distinct from the Community Nurse (falls/nutrition) and TCM/Rehab (pain)."},
+  {module:"Terms of Reference", q:"A senior complains of ongoing joint pain, with no fall risk or memory concerns noted. Where does this referral go?", opts:["Community Nurse","Viriya","TCM or Rehab","Integrated Community Care Partnership"], correct:2, exp:"Pain issues are routed to TCM or Rehab under the ToR's referral guidance."},
+  {module:"Terms of Reference", q:"What's the purpose and size of the deposit collected from centre outing participants?", opts:["A non-refundable $5 admin fee","A refundable $1 deposit to encourage commitment","A refundable $10 deposit that covers transport costs","No deposit is ever collected for outings"], correct:1, exp:"A $1 refundable deposit is collected — small, but enough to encourage commitment to attend."},
+  {module:"Terms of Reference", q:"Per the ToR, how many staff members must physically respond to an Alarm Alert System call at a senior's home?", opts:["Just 1, to save manpower","Exactly 2","At least 3","However many happen to be on shift"], correct:1, exp:"Two staff members should respond to every AAS call at a senior's home."},
+  {module:"Terms of Reference", q:"A staff member submits a medical expense claim to HQ. How much of the claimed amount do they personally bear before HQ covers the rest?", opts:["The first $500","The first $1,000","10% of the total claim","Nothing — HQ covers claims in full"], correct:1, exp:"The claimant bears a $1,000 excess on medical expense claims submitted to HQ."},
+  {module:"Terms of Reference", q:"Which of these is NOT one of the three formal aspects staff are appraised on?", opts:["Performance","Potential","Values","Attendance"], correct:3, exp:"Staff are appraised on Performance, Potential, and Values — attendance isn't one of the three named aspects."},
+  {module:"Terms of Reference", q:"You discover a possible data breach involving senior records. What does the ToR require as the very first action, before anything else?", opts:["Notify AIC immediately","Notify HQ immediately","Contain the breach (e.g. shut down the affected system)","Assess how much data was exposed"], correct:2, exp:"Containment always comes first — then Centre Manager and HQ, then damage assessment, then AIC (after HQ's approval)."},
+  {module:"Terms of Reference", q:"After a data breach has been contained, who must be told immediately — before AIC is informed?", opts:["Only the Centre Manager","The Centre Manager and HQ","AIC and the police","Only the affected seniors"], correct:1, exp:"The Centre Manager and HQ are informed immediately after containment; AIC is only informed later, once HQ approves."},
+  {module:"Terms of Reference", q:"Which of these statements about PDPA consent is FALSE?", opts:["Individuals must be told the purpose of data collection","Individuals must be told how their data will be used or disclosed","Only necessary data should be collected","Consent can be assumed and doesn't need explaining"], correct:3, exp:"Consent is never assumed — individuals must be told the purpose, usage, and disclosure, and only necessary data is collected."},
+  {module:"Terms of Reference", q:"Two popular programmes are scheduled back-to-back at the centre. What's the minimum gap the ToR requires between them?", opts:["No gap is necessary","5 minutes","10 minutes","30 minutes"], correct:2, exp:"Back-to-back programmes should be spaced at least 10 minutes apart."},
+  {module:"Terms of Reference", q:"A Centre wants to maximise its SUSS NIE301 placements within the ToR's limits. What's the most it can take on, and in what grouping?", opts:["2 groups of 10 students","4 groups of 5 students","6 groups of 3 students","Unlimited, as long as mentors are present"], correct:1, exp:"Up to 4 groups of 5 SUSS NIE301 students, with mentors ensuring proper supervision and minimal overlap."},
+  {module:"Terms of Reference", q:"Fitness and GLOW staff are expected to know the Tzu Chi Shangri-la Programme. How many sessions does it run for?", opts:["12","24","33","52"], correct:2, exp:"The Tzu Chi Shangri-la Programme runs for 33 sessions."},
+  {module:"Terms of Reference", q:"A staff member needs new office furniture ordered, and separately needs a leaking tap fixed. Which two teams handle these respectively?", opts:["IT, then General Affairs","Medical Admin, then General Affairs","General Affairs, then Medical Admin","Medical Admin, then IT"], correct:1, exp:"Procurement goes to Medical Admin; facilities issues like a leaking tap go to General Affairs."},
+  {module:"Terms of Reference", q:"Which team handles internet connectivity or workstation issues?", opts:["Medical Admin","General Affairs","IT","AIC"], correct:2, exp:"Work stations and internet issues are routed to IT, distinct from Medical Admin (procurement) and General Affairs (facilities)."},
+  {module:"Terms of Reference", q:"Which combination of details is required for every incident logged in the CaritaHub Contact Log?", opts:["Name and Description only","Name, Location, Time and Description","Location and Time only","Just an incident reference number"], correct:1, exp:"Every incident or AAS response needs all four: Name, Location, Time, and Description."},
+  {module:"Terms of Reference", q:"An outing results in a minor scrape needing a plaster — no ambulance, no public attention. Must this be escalated to AIC?", opts:["Yes, every incident goes to AIC", "No — only incidents involving police, media interest, or reputational risk go to AIC", "Only if the senior's family formally requests it", "Only if a similar incident happens twice"], correct:1, exp:"Only incidents with police involvement, likely media interest, or reputational risk must be escalated to HQ and AIC."},
+  {module:"Terms of Reference", q:"Which senior profile should be prioritised for a donated care pack, per the ToR's guidance?", opts:["Whoever has attended the most programmes","A low-income senior living alone with elevated social risk","The most recently registered member","A senior living outside the assigned service boundary"], correct:1, exp:"Priority goes to low-income seniors with higher social risk — e.g. BLUE CHAS holders, living alone, lonely, or caregivers."},
+  {module:"Terms of Reference", q:"What does the ToR say the SPPB should be used for?", opts:["Screening for dementia risk","A pre/post assessment of physical functionality around a programme","Recording medical expense claims","Assessing volunteer suitability"], correct:1, exp:"The Short Physical Performance Battery is used before and after a physical programme to assess functionality."},
+  {module:"Terms of Reference", q:"Which app is specifically named for PART-TIME staff medical claims, distinct from the general staff app?", opts:["Alliance icare 2.0","Alliance Heyally","CaritaHub","BRIGHT"], correct:1, exp:"Alliance Heyally is named for part-time staff, while Alliance icare 2.0 serves general staff."},
+  {module:"Terms of Reference", q:"The AAS alarm goes off at your centre. What's the correct first action?", opts:["Call 995 immediately","Identify the resident via the AAS panel or digital clock","Head straight to the resident's flat","Log a false-alarm entry"], correct:1, exp:"First identify who's calling via the panel, generate the report, then call their listed contact number before acting further."},
+  {module:"Terms of Reference", q:"Roughly what share of the ~120 volunteers regularly supporting the AACs are retirees, rather than youths or working adults?", opts:["~20%","~50%","~80%","~100%"], correct:2, exp:"About 80% of the ~120 regular volunteers are retirees; the remaining 20% are youths and working adults."},
+  {module:"Terms of Reference", q:"Before a staff member can be considered fully qualified to manage volunteers, which specific course must they complete?", opts:["Community Screener training","Essential Foundation in Volunteer Management","Basic Case Management Workshop","Community Befriending Course"], correct:1, exp:"Staff managing volunteers must complete the Essential Foundation in Volunteer Management course."},
+
+  // ---- Befriending & Buddying ----
+  {module:"Befriending & Buddying", q:"A senior is referred for Befriending on a Monday. By when must the Centre Lead make first contact?", opts:["By the end of that same day","Within 3 working days","Within 10 working days","Within 1 month"], correct:1, exp:"Contact must be made within 3 working days of the referral date."},
+  {module:"Befriending & Buddying", q:"After first contact is made, how long does staff have to assess the senior's suitability for Befriending or Buddying?", opts:["3 working days","5 working days","10 working days","30 working days"], correct:2, exp:"Suitability must be assessed within 10 working days of first contact, so services start promptly."},
+  {module:"Befriending & Buddying", q:"A new hire begins providing Befriending services on their first day. By when must they complete the required training?", opts:["Before their first home visit","Within 1 month","Within 1 year","There's no fixed deadline"], correct:2, exp:"Befrienders must complete appropriate training within 1 year of starting to provide the service."},
+  {module:"Befriending & Buddying", q:"A senior lives alone, feels lonely, and has limited social interaction due to a cognitive impairment — three risk factors in total. Based on the SOP's thresholds, does this point toward Befriending or Buddying?", opts:["Buddying only, since even 1 factor is enough on its own","Befriending, since 2+ factors generally point to the higher-touch service","Neither — a fourth factor would be required","Buddying, because having too many factors disqualifies someone from Befriending"], correct:1, exp:"Generally 2+ risk factors point to Befriending (higher-touch); just 1 factor generally points to Buddying (lighter-touch)."},
+  {module:"Befriending & Buddying", q:"For a senior receiving Buddying, what's the required minimum contact frequency?", opts:["Weekly contact, with a monthly face-to-face session","Monthly contact, with a face-to-face session every 3 months","Quarterly contact, with a yearly face-to-face session","Daily contact, with a weekly face-to-face session"], correct:1, exp:"Buddying requires at least monthly contact, with a face-to-face session at least every 3 months."},
+  {module:"Befriending & Buddying", q:"A befriender notices signs that a senior may be neglecting themselves. What's the correct response?", opts:["Quietly monitor without telling anyone yet","Report it to AAC staff — never decide independently","Arrange hospital admission themselves right away","Wait until the next scheduled visit to mention it"], correct:1, exp:"Befrienders must escalate concerns to AAC staff/the Centre Lead — they never make independent care decisions."},
+  {module:"Befriending & Buddying", q:"A senior has previously shown violent behaviour toward visitors. Can a befriender still be assigned to them?", opts:["Yes, as long as two befrienders go together","No — AACs must not assign a befriender to such a senior","Yes, but only male befrienders","Only after the senior signs a written apology"], correct:1, exp:"AACs must ensure befrienders are never assigned to seniors who exhibit violent or unmanageable behaviour."},
+  {module:"Befriending & Buddying", q:"What two conditions together mark a senior's transition from the Interim Befriending Panel to an AAC as officially complete?", opts:["A phone call plus an email confirmation","At least one joint visit by both centres' staff, plus a raised and actioned IRMS referral","The senior signing a new membership form","Payment of an inter-centre transfer fee"], correct:1, exp:"Completion needs a joint visit by both centres' staff AND an IRMS referral that's been raised and accepted/rejected."},
+  {module:"Befriending & Buddying", q:"Which of these is a genuine home-hazard red flag under the SOP's checklist, rather than an ordinary household feature?", opts:["A recently vacuumed carpet","Loose or broken handrails","A stocked pantry","Curtains drawn during the day"], correct:1, exp:"Loose or broken handrails are a genuine fall-risk hazard, alongside cracked flooring, damp/water damage, and cluttered walkways."},
+  {module:"Befriending & Buddying", q:"How often should a befriender encourage and, where possible, accompany a senior to a centre activity?", opts:["Never — that's outside the befriender's role","At least once a week","At least once a month","Only if specifically instructed by the Manager"], correct:2, exp:"Befrienders should encourage and accompany seniors to at least one social/recreational activity a month, where possible."},
+
+  // ---- Care Referral Process ----
+  {module:"Care Referral Process", q:"A homebound senior with no caregiver can no longer prepare her own meals. Which Social Support pathway fits best?", opts:["Meals-on-Wheels","Medical Escort and Transport","Family Service Centre","Social Service Office"], correct:0, exp:"Meals-on-Wheels is specifically for frail, homebound seniors who can't buy/prepare meals and lack caregiver support."},
+  {module:"Care Referral Process", q:"Among the Five Steps used for NUP/SAP/EWAW referrals, which one specifically starts with the non-dominant hand for a left-handed senior?", opts:["Functional Reach Test","Grip Strength","Chair Stand Test","Gait Speed Test"], correct:1, exp:"Grip Strength starts with the left hand first if the senior is left-handed, then moves to the right."},
+  {module:"Care Referral Process", q:"Which of these is required for EVERY new SEEN member, regardless of referral source?", opts:["The Five Steps physical assessment","Community Screening","The PDPA consent form","An NUP referral letter"], correct:2, exp:"The PDPA consent form is universal; the Five Steps and Community Screening only apply to specific referral sources/zones."},
+  {module:"Care Referral Process", q:"On the first attempt to contact a senior about a 2S visit, they explicitly say they don't want to be contacted again. What's the correct next step?", opts:["Try again in exactly 1 month","Try again within 2 working days","Don't attempt a second contact — just log the outcome","Escalate immediately to AIC for intervention"], correct:2, exp:"An explicit decline with no further contact wanted means staff should stop there and log the outcome for the referral source."},
+  {module:"Care Referral Process", q:"Which corporate partner donates bread twice a week for distribution to seniors?", opts:["Favoured Moments","BreadTalk and Oishii Bread","rizHomes","Harity Saloon"], correct:1, exp:"BreadTalk and Oishii Bread outlets donate bread, collected twice weekly."},
+  {module:"Care Referral Process", q:"Which partner installs fall-detection sensors at no cost for vulnerable, stay-alone seniors?", opts:["rizHomes","Heartware","EyeCare House","Kampung Senang"], correct:0, exp:"rizHomes provides free fall-detection sensor installation for vulnerable, stay-alone seniors."},
+  {module:"Care Referral Process", q:"A senior needs regular medication management and vital-signs monitoring, but is otherwise fairly independent. Which referral pathway fits better — Home Nursing or Home Personal Care?", opts:["Home Nursing, since it covers medication/vitals monitoring","Home Personal Care, since it's the broader service","Either is fine — they're interchangeable","Neither — this should go to Day Care instead"], correct:0, exp:"Home Nursing specifically covers vital-signs monitoring and medication management for seniors who can't leave home."},
+  {module:"Care Referral Process", q:"Which referral pathway specifically assesses a senior's ADL/iADL needs where caregiver support is limited?", opts:["Home Nursing","Home Personal Care (HPC)","Primary Care Network","Community Rehab"], correct:1, exp:"Home Personal Care (HPC) is the pathway for ADL/iADL needs with limited or no caregiver support."},
+  {module:"Care Referral Process", q:"While processing a Primary Care Network referral, a senior suddenly loses consciousness. What's the correct immediate action?", opts:["Continue the referral paperwork first","Call 995 immediately and inform the senior's NOK","Wait the usual 2-3 working days for a PCN update","Refer instead to CREST"], correct:1, exp:"Loss of consciousness is an emergency — call 995 immediately and inform NOK, overriding the normal referral timeline."},
+  {module:"Care Referral Process", q:"For a Family Service Centre referral involving suspected neglect, what extra consent is typically required beyond the senior's own?", opts:["No extra consent is needed","Consent for family members to be contacted","Consent to publish the case as a study","Consent from AIC's legal team"], correct:1, exp:"FSC referrals for neglect/abuse cases typically need consent that also covers contacting family members."},
+
+  // ---- Adaptive Sports & Frailty Prevention ----
+  {module:"Adaptive Sports & Frailty Prevention", q:"How many distinct sports does the Adaptive Sports Toolkit cover?", opts:["10","12","14","16"], correct:2, exp:"The toolkit covers 14 sports, from Floorball to Wheelchair Racing."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Which Clinical Frailty Score range determines eligibility for CALM 1.0 specifically — not the wider Adaptive Sports track?", opts:["CFS 1-3","CFS 1-5","CFS 4-6","CFS 4-9"], correct:0, exp:"CALM 1.0 is for CFS 1-3; the broader Adaptive Sports component under this programme extends to CFS 1-5."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"What's the minimum number of trained staff/volunteers a Centre needs before it can run CALM 1.0?", opts:["1","2","4","The entire fitness team"], correct:1, exp:"At least 2 staff/volunteers must complete the CALM 1.0 training before a Centre can run it."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Counting CALM 1.0 and the Maintenance Phase together, how long does the full Combat Frailty programme run?", opts:["8 weeks","12 weeks","20 weeks","24 weeks"], correct:2, exp:"CALM 1.0 (8 weeks) plus the Maintenance Phase (12 weeks) totals 20 weeks."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Before a wheelchair user joins an Adaptive Sports session, which combination of checks is required?", opts:["Just a signed waiver","Anti-tip wheelchair, fastened seatbelt, footplates folded/swung away, feet properly supported","A caregiver present and nothing else","A doctor's medical clearance letter only"], correct:1, exp:"The wheelchair safety checklist covers all of these — anti-tip, seatbelt, footplates, and foot support."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"For a player with hearing considerations, which adjustment matters most according to the facilitation guidance?", opts:["Playing background music to set the mood","Keeping the room quiet and ensuring hearing aids are worn and working","Seating them furthest from the facilitator","Using written instructions only, with no verbal cues"], correct:1, exp:"A quiet environment plus working hearing aids matters most — background music actively works against this."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"How much floor space does Square Stepping need to run 3 mats for 30 seniors?", opts:["16m²","32m²","64m²","100m²"], correct:2, exp:"Square Stepping needs about 64m² (8m by 8m) for 3 mats serving 30 participants."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Where does Aqua Fun Fit take place, and does the AAC provide transport there?", opts:["At the AAC itself; no transport needed","A nearby ActiveSG pool; no transport provided","A hospital pool; transport is provided","Held online; not applicable"], correct:1, exp:"Aqua Fun Fit is held at a nearby ActiveSG pool, with no transport provided by the AAC."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Can a senior who skipped CALM 1.0 join the Maintenance Phase directly?", opts:["Yes, anytime they like","No — it's one continuous 20-week programme starting with CALM 1.0","Only if their CFS score is exactly 1","Only with special written AIC approval"], correct:1, exp:"Maintenance Phase participants must have completed CALM 1.0 first — it's one continuous programme, not standalone."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"Is the Adaptive Sports component of the Combat Frailty Programme run as a train-the-trainer model?", opts:["Yes, trained staff become certified assessors","No — it isn't structured as train-the-trainer","Only at Bukit Batok","Only for staff with a fitness background"], correct:1, exp:"Unlike some other elements, Adaptive Sports isn't designed as a train-the-trainer model."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"How much space does a 30-participant CALM 1.0 session require, and how is that figure worked out?", opts:["30m², at 1m² per person","67.5m², at 1.5m by 1.5m per person","100m², at roughly 3m² per person","No fixed space requirement is specified"], correct:1, exp:"CALM 1.0 needs 67.5m² for 30 pax, based on a 1.5m by 1.5m footprint per participant."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"By when must the AAC submit its CALM 1.0 participant namelist to SportSG?", opts:["On the morning of Week 1","1 week before Week 1","1 month before Week 1","There's no submission deadline"], correct:2, exp:"Staff must identify and recruit participants and submit the namelist to SportSG a full month before Week 1 begins."},
+  {module:"Adaptive Sports & Frailty Prevention", q:"To use the pool for Aqua Fun Fit, what must a senior do first?", opts:["Nothing — entry is automatic for AAC seniors","Create an ActiveSG Plus membership; those under 65 pay the standard entry charge","Pay a one-time $50 registration fee","Get a doctor's medical clearance letter"], correct:1, exp:"Seniors need an ActiveSG Plus membership to enter, and pay standard pool charges if they're under 65."},
+
+  // ---- SEEN Service Model & Operations ----
+  {module:"SEEN Service Model & Operations", q:"Under the ASCEND model, roughly what share of AAC seniors fall into the \"robust\" category rather than pre-frail or frail?", opts:["~65%","~75%","~87%","~95%"], correct:2, exp:"About 87% of sampled seniors are relatively robust, versus ~11% pre-frail and ~2% frail."},
+  {module:"SEEN Service Model & Operations", q:"A senior's blood pressure reads 185/115. Per the escalation protocol, what should staff advise?", opts:["Log it and continue routine follow-up","Recommend a routine health screening","Advise the senior to see a doctor immediately","No action needed unless symptoms appear"], correct:2, exp:"185/115 falls in the Hypertensive Crisis band (≥180/≥110), which calls for immediate medical attention."},
+  {module:"SEEN Service Model & Operations", q:"Which combination of symptoms should trigger an immediate call to 995, rather than just monitoring?", opts:["Mild fatigue and thirst after exercise","Sudden severe chest pain and breathing difficulty","Wanting to sit down and rest","A slightly elevated heart rate after activity"], correct:1, exp:"Sudden severe pain and breathing difficulty are 995 red-flag symptoms; the others are normal exertion responses."},
+  {module:"SEEN Service Model & Operations", q:"Roughly what proportion of current AAC staff originally came in as Tzu Chi volunteers before being hired?", opts:["~30%","~45%","~60%","~75%"], correct:2, exp:"About 60% of AAC staff started out as Tzu Chi volunteers before joining as employees."},
+  {module:"SEEN Service Model & Operations", q:"How long does the Certificate in Support Care (Community Care) course run for?", opts:["4 days","3 weeks","12 weeks","6 months"], correct:2, exp:"The Certificate in Support Care (Community Care) runs for 12 weeks."},
+  {module:"SEEN Service Model & Operations", q:"Which of the two centres is positioned as the Centre of Excellence in Nutrition, rather than Fitness?", opts:["Bukit Batok","Nanyang","Both equally","Neither — that positioning doesn't exist"], correct:1, exp:"Nanyang (NY) leads in Nutrition; Bukit Batok (BB) leads in Fitness and Humanistic Programmes."},
+  {module:"SEEN Service Model & Operations", q:"Which of these is an actual AED location at Tzu Chi SEEN @ Bukit Batok?", opts:["230 Level 1, Lift Lobby B","Level 3 pantry","The car park entrance","Inside the karaoke room"], correct:0, exp:"BB's AEDs are at 230 Level 1 Lift Lobby B and 219 Level 1 Lift Lobby B."},
+  {module:"SEEN Service Model & Operations", q:"What does TCFS's Task Management Software (TMS) primarily automate?", opts:["Fee collection and invoicing","Attendance-taking, registration, and multi-language reminders","Volunteer background checks","Medical claim approvals"], correct:1, exp:"The TMS automates attendance, registration, and automatic multi-language reminder messages."},
+  {module:"SEEN Service Model & Operations", q:"What is the BIXEPS machine designed to improve?", opts:["Blood pressure measurement accuracy","Lower-limb strength, balance and gait speed to reduce fall risk","Cognitive test scoring","Meal nutrition tracking"], correct:1, exp:"BIXEPS builds lower-limb strength, balance and gait speed with minimal supervision, aimed at cutting fall risk."},
+  {module:"SEEN Service Model & Operations", q:"Under the RHS partnership, how often are Community Nurses typically deployed to the AAC?", opts:["Daily","Weekly","Monthly","Quarterly"], correct:1, exp:"Community Nurses are deployed weekly, reviewing 6-14 residents per session."},
+  {module:"SEEN Service Model & Operations", q:"The ENCODE model being co-developed with NUHS focuses on supporting which group?", opts:["Seniors with mobility issues only","Older adults with dementia and their caregivers","New staff during onboarding","Volunteer recruitment"], correct:1, exp:"ENCODE is a multidisciplinary model for individualised dementia support for both seniors and their caregivers."},
+  {module:"SEEN Service Model & Operations", q:"From CY2025, roughly what share of staff time does TCFS plan to set aside specifically for staff-led improvement ideas?", opts:["1%","5%","10%","20%"], correct:2, exp:"TCFS plans to set aside about 10% of staff time for staff to ideate and work on new improvement ideas."},
+  {module:"SEEN Service Model & Operations", q:"Under the AAPF, what's the minimum duration for a qualifying physical activity?", opts:["15 minutes","20 minutes","30 minutes","45 minutes"], correct:2, exp:"Physical activities must run at least 30 minutes to meet the AAPF standard."},
+  {module:"SEEN Service Model & Operations", q:"And what's the minimum duration for a qualifying cognitive activity under the AAPF?", opts:["20 minutes","30 minutes","45 minutes","60 minutes"], correct:2, exp:"Cognitive activities must run at least 45 minutes — 15 minutes longer than the physical-domain minimum."},
+  {module:"SEEN Service Model & Operations", q:"How frequently must Learning-domain activities be run, at minimum, to meet the AAPF standard?", opts:["Weekly","Fortnightly","Monthly","Quarterly"], correct:2, exp:"Learning activities must be organised at least once a month."},
+  {module:"SEEN Service Model & Operations", q:"How frequently must volunteering opportunities be offered, at minimum, under the AAPF?", opts:["Monthly","Quarterly","Half-yearly","Annually"], correct:1, exp:"Volunteering opportunities must be offered at least once a quarter — less frequent than the monthly Learning requirement."},
+  {module:"SEEN Service Model & Operations", q:"Which specific activity is the one mandatory element of the social domain, required at least weekly?", opts:["Karaoke sessions","Communal meals","Outings","Arts and crafts"], correct:1, exp:"Communal meals are the one non-negotiable social-domain activity, required at least once a week."},
+  {module:"SEEN Service Model & Operations", q:"Rehab equipment and wheelchairs in the medical room are cleaned and disinfected on what schedule?", opts:["Only during the 6-monthly thorough clean","Once a week","After every single use","Only if visibly dirty"], correct:2, exp:"Medical/rehab equipment is cleaned and disinfected after every use — not just on the routine schedule — on top of the 6-monthly deep clean."},
+  {module:"SEEN Service Model & Operations", q:"What's the minimum share of listed cleaning areas that must be visually inspected each day?", opts:["1%","10%","25%","50%"], correct:1, exp:"At least 10% of listed areas are visually inspected daily, rotating through a fixed 6-day checklist."},
+  {module:"SEEN Service Model & Operations", q:"How much does it cost to book the Karaoke Room for a 2-hour group session (up to 6 people)?", opts:["$3 total","$20 per room","$3 per person per hour only, no group rate","It's free for group bookings"], correct:1, exp:"A 2-hour group booking costs $20 per room, versus $3 per person per hour for individual bookings."},
+
+  // ---- KPIs, Surveys & Reference Library ----
+  {module:"KPIs, Surveys & Reference Library", q:"By FY2025, what's the official AIC satisfaction KPI target for active ageing programmes?", opts:["70%","80%","85%","90%"], correct:2, exp:"The official target is 85% satisfaction with active ageing/socio-recreational programmes by FY2025."},
+  {module:"KPIs, Surveys & Reference Library", q:"At minimum, how many of the five Active Ageing Programme domains must a Centre actively run activities in?", opts:["2 of 5","3 of 5","4 of 5","All 5"], correct:2, exp:"Centres must offer activities in at least 4 of 5 domains — one domain can be skipped, but social (with communal meals) is mandatory."},
+  {module:"KPIs, Surveys & Reference Library", q:"How long does a completed Community Screener (CS) remain valid before it needs to be redone?", opts:["6 months","1 year","2 years","3 years"], correct:2, exp:"A Community Screener stays valid for up to 2 years from the date of administration."},
+  {module:"KPIs, Surveys & Reference Library", q:"Which of these could an AAC legitimately charge a senior a fee for, unlike the others?", opts:["Community Screening","Befriending and Buddying","A ticketed outing to a theme park","Information and Referral"], correct:2, exp:"Outreach, membership, BnB, I&R, AAS monitoring, Social Connector and Community Screening can never be charged for — but paid outings are permitted with upfront disclosure."},
+  {module:"KPIs, Surveys & Reference Library", q:"Which of these would breach an AAC's requirement to remain politically neutral?", opts:["Sharing programme info with a grassroots adviser about local activities","Displaying a political party's logo at a centre event","Partnering with a Member of Parliament's office on a health fair in their official capacity","Inviting a government agency to co-run a screening"], correct:1, exp:"Displaying a political party's logo breaches neutrality — the other three are permitted forms of engagement in an official capacity."},
+  {module:"KPIs, Surveys & Reference Library", q:"How long must AAC service documentation be kept on file for audit purposes?", opts:["1 year","3 years","5 years","Indefinitely"], correct:2, exp:"Documentation must be retained for at least 5 years after the end of the FY it relates to."},
+  {module:"KPIs, Surveys & Reference Library", q:"How long does each of the three role-based training curricula (Manager, Executive/Associate, Fitness) run for?", opts:["3 months","6 months","9 months","12 months"], correct:1, exp:"All three curricula run for 6 months, though their monthly themes differ by role."},
+  {module:"KPIs, Surveys & Reference Library", q:"New hires on the training curriculum are typically paired with what kind of support alongside formal coursework?", opts:["An external mentor from AIC","An experienced peer buddy","A dedicated case manager","No structured support — it's self-directed"], correct:1, exp:"New hires are buddied with an experienced peer to help build competency alongside the formal courses."},
+  {module:"KPIs, Surveys & Reference Library", q:"A senior has been receiving Befriending/Buddying for exactly 2 months. Are they yet eligible for the satisfaction survey?", opts:["Yes, any duration qualifies","No — the survey is given after at least 3 months of service","Yes, but only after their first home visit","No — surveys are only given at year-end"], correct:1, exp:"The Befriending/Buddying survey is given to seniors who've received the service for at least 3 months — 2 months is too early."},
+  {module:"KPIs, Surveys & Reference Library", q:"Why is a satisfaction survey preferably administered by someone other than the staff member who delivered the service?", opts:["It's faster that way","To reduce bias in the senior's responses","It's an AIC scheduling requirement","So the original staff member can rest"], correct:1, exp:"Using an independent staff member or volunteer helps reduce bias in how the senior answers."},
+  {module:"KPIs, Surveys & Reference Library", q:"Why can't the postal-code / service-boundary files for BB and NY be freely shared or forwarded?", opts:["They're outdated and inaccurate","They're confidential and supplement AIC's Letter of Award","They contain seniors' medical records","There's no restriction — they're public documents"], correct:1, exp:"These files supplement AIC's Letter of Award and are confidential — not to be shared or reproduced without AIC's consent."},
+];
+</script>
+<script>
+/* ---------------- State ---------------- */
+const acked = new Set();
+
+/* ---------------- Group sections by module, preserving first-seen order ---------------- */
+const MODULES = [];
+SECTIONS.forEach(sec=>{
+  if(!MODULES.includes(sec.module)) MODULES.push(sec.module);
+});
+
+/* ---------------- Render sidebar + hero cards, grouped by module ---------------- */
+const toc = document.getElementById('toc');
+const heroGroups = document.getElementById('heroGroups');
+
+MODULES.forEach((mod, modIdx)=>{
+  const modHeader = document.createElement('div');
+  modHeader.className = 'module-header';
+  modHeader.textContent = mod;
+  toc.appendChild(modHeader);
+
+  const heroTitle = document.createElement('div');
+  heroTitle.className = 'hero-module-title';
+  heroTitle.textContent = mod;
+  heroGroups.appendChild(heroTitle);
+
+  const grid = document.createElement('div');
+  grid.className = 'hero-grid';
+  heroGroups.appendChild(grid);
+
+  SECTIONS.filter(s=>s.module===mod).forEach(sec=>{
+    const btn = document.createElement('button');
+    btn.className = 'toc-item';
+    btn.dataset.id = sec.id;
+    btn.innerHTML = `<span class="toc-num"><span>${sec.id}</span></span><span class="toc-label">${sec.title}</span>`;
+    btn.onclick = ()=> showSection(sec.id);
+    toc.appendChild(btn);
+
+    const card = document.createElement('button');
+    card.className = 'hero-card';
+    card.innerHTML = `<span class="toc-num"><span>${sec.id}</span></span><h3>${sec.title}</h3><p>${sec.intro}</p>`;
+    card.onclick = ()=> showSection(sec.id);
+    grid.appendChild(card);
+  });
+
+  // per-module quiz entries (sidebar + hero card)
+  const quizBtn = document.createElement('button');
+  quizBtn.className = 'toc-item toc-quiz';
+  quizBtn.dataset.quizMod = modIdx;
+  quizBtn.innerHTML = `<span class="toc-num" style="border-radius:6px;">★</span><span class="toc-label">${mod} — Quiz</span>`;
+  quizBtn.onclick = ()=> showQuiz(modIdx);
+  toc.appendChild(quizBtn);
+
+  const quizCard = document.createElement('button');
+  quizCard.className = 'hero-card';
+  quizCard.innerHTML = `<span class="toc-num" style="border-radius:6px;">★</span><h3>${mod} — Knowledge Check</h3><p>10 random questions from this module.</p>`;
+  quizCard.onclick = ()=> showQuiz(modIdx);
+  grid.appendChild(quizCard);
+});
+
+document.getElementById('ringLabel').textContent = `0/${SECTIONS.length}`;
+document.getElementById('progressText').innerHTML = `acknowledged: <strong>0 of ${SECTIONS.length}</strong>`;
+
+/* ---------------- Render each section view ---------------- */
+const root = document.getElementById('sectionsRoot');
+
+function renderItems(items){
+  return '<ul>' + items.map(it=>{
+    if(typeof it === 'string'){
+      return `<li>${it}</li>`;
+    } else {
+      return `<li>${it.text}${it.sub ? renderItems(it.sub) : ''}</li>`;
+    }
+  }).join('') + '</ul>';
+}
+
+SECTIONS.forEach((sec, idx)=>{
+  const view = document.createElement('section');
+  view.className = 'section-view';
+  view.id = 'sec-' + sec.id;
+
+  const factsHtml = sec.facts.length ? `<div class="facts">${sec.facts.map(f=>`<div class="fact-chip"><span class="num">${f.num}</span><span class="lab">${f.lab}</span></div>`).join('')}</div>` : '';
+  const groupsHtml = sec.groups.map(g=>`<div class="group">${g.heading?`<h4>${g.heading}</h4>`:''}${renderItems(g.items)}</div>`).join('');
+  const calloutHtml = sec.extraCallout ? `<div class="callout">${sec.extraCallout}</div>` : '';
+  const refHtml = sec.reference ? `
+    <div class="refbox">
+      <div class="refhead">📁 Reference documents</div>
+      <p class="refnote">${sec.reference.note}</p>
+      <div class="refdocs">${sec.reference.docs.map(d=>`<span class="refdoc-chip">${d}</span>`).join('')}</div>
+    </div>` : '';
+
+  const topicQuizHtml = sec.quiz && sec.quiz.length ? `
+    <div class="topic-quiz">
+      <div class="topic-quiz-head">✎ Check yourself — ${sec.quiz.length} questions on this topic</div>
+      ${sec.quiz.map((item, qi)=>`
+        <div class="quiz-q" data-topic="${sec.id}" data-qi="${qi}">
+          <p class="qtext">${qi+1}. ${item.q}</p>
+          <div class="quiz-opts">${item.opts.map((o,oi)=>`<button class="quiz-opt" data-oi="${oi}">${o}</button>`).join('')}</div>
+          <p class="quiz-explain">${item.exp}</p>
+        </div>`).join('')}
+    </div>` : '';
+
+  const prevBtn = idx===0 ? "showHero()" : `showSection(${SECTIONS[idx-1].id})`;
+  const prevLabel = idx===0 ? 'Back to overview' : SECTIONS[idx-1].title;
+
+  view.innerHTML = `
+    <span class="sec-tag ${sec.tagClass}">${sec.module} · ${sec.tag}</span>
+    <h2>${sec.title}</h2>
+    <p class="intro">${sec.intro}</p>
+    ${factsHtml}
+    ${groupsHtml}
+    ${calloutHtml}
+    ${refHtml}
+    ${topicQuizHtml}
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="${prevBtn}">← ${prevLabel}</button>
+      <button class="btn btn-primary" id="ack-${sec.id}" onclick="toggleAck(${sec.id})">I understand this</button>
+    </div>
+  `;
+  root.appendChild(view);
+
+  // wire up click handlers for this topic's mini-quiz
+  if(sec.quiz && sec.quiz.length){
+    view.querySelectorAll('.quiz-q').forEach(q=>{
+      const item = sec.quiz[parseInt(q.dataset.qi)];
+      const optButtons = q.querySelectorAll('.quiz-opt');
+      optButtons.forEach(ob=>{
+        ob.onclick = ()=>{
+          if(ob.dataset.locked) return;
+          optButtons.forEach(b=>b.dataset.locked = "1");
+          const oi = parseInt(ob.dataset.oi);
+          optButtons[item.correct].classList.add('correct');
+          if(oi !== item.correct) ob.classList.add('wrong');
+          q.querySelector('.quiz-explain').classList.add('show');
+        };
+      });
+    });
+  }
+});
+
+/* ---------------- Quiz views (one per module) ---------------- */
+const MODULE_QUIZ_POOL = {};
+MODULES.forEach((mod, modIdx)=>{
+  MODULE_QUIZ_POOL[modIdx] = QUIZ_BANK.filter(q=>q.module===mod);
+});
+
+const quizState = {}; // per-module: { view, currentSet, answered, score }
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+MODULES.forEach((mod, modIdx)=>{
+  const pool = MODULE_QUIZ_POOL[modIdx];
+  const quizView = document.createElement('section');
+  quizView.className = 'section-view';
+  quizView.id = 'sec-quiz-' + modIdx;
+  quizView.innerHTML = `
+    <span class="sec-tag tag-gold">${mod} · Knowledge check</span>
+    <h2>${mod} — Quick check-in</h2>
+    <p class="intro">10 random questions pulled from a bank of ${pool.length}. Your result is recorded under your nickname. Passing mark: 80%.</p>
+    <div id="quizQuestions-${modIdx}"></div>
+    <div class="quiz-score" id="quizScore-${modIdx}"><span class="big" id="quizScoreBig-${modIdx}"></span><span id="quizScoreText-${modIdx}"></span><div style="margin-top:14px"><button class="btn btn-primary" onclick="retryQuiz(${modIdx})">↻ Retry quiz</button></div></div>
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="showHero()">← Back to overview</button>
+      <button class="btn btn-primary" onclick="renderQuiz(${modIdx})">🔀 New set of questions</button>
+    </div>
+  `;
+  root.appendChild(quizView);
+  quizState[modIdx] = { answered: 0, score: 0, currentSet: [] };
+});
+
+function retryQuiz(modIdx){
+  renderQuiz(modIdx);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderQuiz(modIdx){
+  const pool = MODULE_QUIZ_POOL[modIdx];
+  const st = quizState[modIdx];
+  st.score = 0;
+  st.answered = 0;
+  st.currentSet = shuffle(pool).slice(0, 10);
+
+  const qWrap = document.getElementById(`quizQuestions-${modIdx}`);
+  qWrap.innerHTML = '';
+  document.getElementById(`quizScore-${modIdx}`).classList.remove('show');
+
+  st.currentSet.forEach((item, i)=>{
+    const q = document.createElement('div');
+    q.className = 'quiz-q';
+    q.innerHTML = `<p class="qtext">${i+1}. ${item.q}</p>
+      <div class="quiz-opts">${item.opts.map((o,oi)=>`<button class="quiz-opt" data-oi="${oi}">${o}</button>`).join('')}</div>
+      <p class="quiz-explain">${item.exp}</p>`;
+    const optButtons = q.querySelectorAll('.quiz-opt');
+    optButtons.forEach(ob=>{
+      ob.onclick = ()=>{
+        if(ob.dataset.locked) return;
+        optButtons.forEach(b=>b.dataset.locked = "1");
+        const oi = parseInt(ob.dataset.oi);
+        optButtons[item.correct].classList.add('correct');
+        if(oi !== item.correct) ob.classList.add('wrong');
+        q.querySelector('.quiz-explain').classList.add('show');
+        st.answered++;
+        if(oi === item.correct) st.score++;
+        item._selected = oi;
+        if(st.answered === st.currentSet.length){
+          const scoreBox = document.getElementById(`quizScore-${modIdx}`);
+          const percentage = Math.round((st.score / st.currentSet.length) * 100);
+          document.getElementById(`quizScoreBig-${modIdx}`).textContent = st.score + ' / ' + st.currentSet.length + ' (' + percentage + '%)';
+          document.getElementById(`quizScoreText-${modIdx}`).textContent = percentage >= 80 ? 'PASS — You achieved the 80% passing mark.' : 'NOT PASSED — Please revise and try again.';
+          scoreBox.classList.add('show');
+          saveQuizResult(modIdx, st.currentSet);
+        }
+      };
+    });
+    qWrap.appendChild(q);
+  });
+}
+
+
+/* ---------------- Login & Result Storage ---------------- */
+let currentNickname = sessionStorage.getItem('communityCareNickname') || '';
+function loginUser(){
+  const nickname = document.getElementById('nicknameInput').value.trim();
+  if(!nickname){ document.getElementById('loginError').textContent = 'Please enter your nickname.'; return; }
+  fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname})})
+    .then(r=>r.json()).then(data=>{
+      if(data.error){ document.getElementById('loginError').textContent=data.error; return; }
+      currentNickname=data.nickname; sessionStorage.setItem('communityCareNickname', currentNickname); applyLogin();
+    }).catch(()=>document.getElementById('loginError').textContent='Unable to connect to the server.');
+}
+function applyLogin(){
+  document.getElementById('loginOverlay').style.display='none';
+  document.getElementById('userBar').style.display='block';
+  document.getElementById('nicknameDisplay').textContent=currentNickname;
+}
+function logoutUser(){ sessionStorage.removeItem('communityCareNickname'); currentNickname=''; document.getElementById('loginOverlay').style.display='flex'; document.getElementById('userBar').style.display='none'; document.getElementById('nicknameInput').value=''; }
+if(currentNickname) applyLogin();
+async function saveQuizResult(modIdx, questions){
+  if(!currentNickname) return;
+  const answers = questions.map((q,i)=>({questionNumber:i+1,question:q.q,selectedAnswer:q.opts[q._selected] || '',correctAnswer:q.opts[q.correct],isCorrect:q._selected===q.correct}));
+  try{
+    await fetch('/api/quiz-results',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nickname:currentNickname,moduleName:MODULES[modIdx],answers})});
+  }catch(e){ console.error('Could not save quiz result',e); }
+}
+
+/* ---------------- Navigation ---------------- */
+function showHero(){
+  document.getElementById('heroView').style.display = 'block';
+  document.querySelectorAll('.section-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.toc-item').forEach(b=>b.classList.remove('active'));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function showSection(id){
+  document.getElementById('heroView').style.display = 'none';
+  document.querySelectorAll('.section-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.toc-item').forEach(b=>b.classList.toggle('active', b.dataset.id == id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(window.innerWidth <= 880){ document.getElementById('toc').classList.remove('open'); }
+}
+function showQuiz(modIdx){
+  document.getElementById('heroView').style.display = 'none';
+  document.querySelectorAll('.section-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('sec-quiz-' + modIdx).classList.add('active');
+  document.querySelectorAll('.toc-item').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.toc-quiz[data-quiz-mod="${modIdx}"]`).classList.add('active');
+  renderQuiz(modIdx);
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(window.innerWidth <= 880){ document.getElementById('toc').classList.remove('open'); }
+}
+
+function toggleAck(id){
+  const tocBtn = document.querySelector(`.toc-item[data-id="${id}"]`);
+  const ackBtn = document.getElementById('ack-'+id);
+  if(acked.has(id)){
+    acked.delete(id);
+    tocBtn.classList.remove('done');
+    ackBtn.textContent = 'I understand this';
+    ackBtn.classList.remove('acked');
+  } else {
+    acked.add(id);
+    tocBtn.classList.add('done');
+    ackBtn.textContent = '✓ Acknowledged';
+    ackBtn.classList.add('acked');
+  }
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = SECTIONS.length;
+  const done = acked.size;
+  document.getElementById('progressText').innerHTML = `acknowledged: <strong>${done} of ${total}</strong>`;
+  document.getElementById('ringLabel').textContent = `${done}/${total}`;
+  const circumference = 119;
+  const offset = circumference - (done/total)*circumference;
+  document.getElementById('ringFg').style.strokeDashoffset = offset;
+}
+
+document.getElementById('menuToggle').onclick = ()=>{
+  document.getElementById('toc').classList.toggle('open');
+};
+</script>
+</body>
+</html>
