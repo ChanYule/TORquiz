@@ -1,0 +1,17 @@
+{
+  "name": "community-care-quiz-render",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
