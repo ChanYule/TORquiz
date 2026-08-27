@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,101 +21,577 @@
       --gold: #b8883b;
       --shadow: 0 18px 50px rgba(23, 43, 61, .08);
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       color: var(--ink);
       background: var(--cream);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    .shell { max-width: 1240px; margin: auto; padding: 28px 32px 64px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 52px; }
-    .brand { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; }
-    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--navy); color: #fff; font-weight: 800; letter-spacing: -.08em; }
-    .brand-text { font-weight: 750; letter-spacing: -.02em; }
-    .brand-text small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .11em; text-transform: uppercase; }
-    .topbar-note { color: var(--muted); font-size: 13px; }
-    .eyebrow { margin: 0 0 10px; color: var(--gold); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
-    h1, h2, p { margin-top: 0; }
-    h1 { max-width: 650px; margin-bottom: 12px; font-family: Georgia, serif; font-size: clamp(38px, 5vw, 60px); font-weight: 600; line-height: .98; letter-spacing: -.045em; }
-    .intro { max-width: 580px; margin-bottom: 34px; color: var(--muted); font-size: 16px; line-height: 1.6; }
-    .panel { border: 1px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: var(--shadow); }
-    .login-card { max-width: 520px; padding: 34px; }
-    .login-card h2 { margin-bottom: 8px; font-family: Georgia, serif; font-size: 28px; font-weight: 600; }
-    .login-card p { color: var(--muted); line-height: 1.5; }
-    .field-label { display: block; margin: 24px 0 8px; color: var(--ink); font-size: 13px; font-weight: 750; }
-    .input-row { display: flex; gap: 10px; }
-    input, select {
-      min-height: 46px; border: 1px solid #d5dfda; border-radius: 10px; background: #fbfcfb; color: var(--ink); outline: none; padding: 0 14px;
+
+    button,
+    input,
+    select {
+      font: inherit;
     }
-    input:focus, select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(22, 50, 79, .1); }
-    .input-row input { flex: 1; min-width: 0; }
-    .primary, .secondary, .danger {
-      min-height: 44px; border: 0; border-radius: 10px; padding: 0 17px; font-weight: 750; transition: transform .15s, background .15s;
+
+    button {
+      cursor: pointer;
     }
-    .primary { background: var(--navy); color: #fff; }
-    .primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
-    .secondary { border: 1px solid var(--line); background: #fff; color: var(--ink); }
-    .secondary:hover { background: #f4f7f5; }
-    .danger { min-height: 34px; background: transparent; color: var(--red); font-size: 12px; }
-    .danger:hover { background: var(--red-soft); }
-    .error { min-height: 20px; margin: 12px 0 0; color: var(--red); font-size: 13px; }
-    .hidden { display: none !important; }
-    .dashboard-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
-    .dashboard-head h2 { margin-bottom: 7px; font-family: Georgia, serif; font-size: 34px; font-weight: 600; letter-spacing: -.03em; }
-    .dashboard-head p { margin-bottom: 0; color: var(--muted); }
-    .head-actions { display: flex; align-items: center; gap: 12px; }
-    .refresh-note { color: var(--muted); font-size: 12px; white-space: nowrap; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
-    .stat { padding: 22px; }
-    .stat-label { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 12px; font-weight: 750; letter-spacing: .03em; text-transform: uppercase; }
-    .stat-value { display: block; margin-top: 10px; font-size: 30px; letter-spacing: -.04em; }
-    .stat-accent { color: var(--green); }
-    .stat-warn { color: var(--red); }
-    .results-panel { overflow: hidden; }
-    .results-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
-    .results-toolbar h3 { margin: 0; font-size: 17px; }
-    .filters { display: flex; gap: 10px; }
-    .filters input { width: min(260px, 30vw); }
-    .filters select { min-width: 125px; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 780px; }
-    th { padding: 13px 24px; background: #fbfcfb; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-align: left; text-transform: uppercase; }
-    td { padding: 18px 24px; border-top: 1px solid var(--line); font-size: 14px; vertical-align: top; }
-    .person { font-weight: 750; }
-    .module { color: var(--muted); font-size: 13px; }
-    .score { font-weight: 750; }
-    .score small { display: block; margin-top: 3px; color: var(--muted); font-weight: 500; }
-    .badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 99px; padding: 6px 9px; font-size: 11px; font-weight: 800; letter-spacing: .04em; }
-    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .pass { background: var(--green-soft); color: var(--green); }
-    .fail { background: var(--red-soft); color: var(--red); }
-    .date { color: var(--muted); white-space: nowrap; }
-    details summary { color: var(--navy); cursor: pointer; font-size: 13px; font-weight: 750; }
-    .answer-list { min-width: 290px; max-width: 420px; margin-top: 12px; padding-top: 2px; }
-    .answer { margin: 0; padding: 10px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.5; }
-    .answer strong { display: block; margin-bottom: 2px; color: var(--ink); }
-    .answer.correct strong { color: var(--green); }
-    .answer.wrong strong { color: var(--red); }
-    .empty { padding: 72px 24px; color: var(--muted); text-align: center; }
-    .empty strong { display: block; margin-bottom: 7px; color: var(--ink); font-family: Georgia, serif; font-size: 22px; }
+
+    .shell {
+      max-width: 1240px;
+      margin: auto;
+      padding: 28px 32px 64px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 52px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -.08em;
+    }
+
+    .brand-text {
+      font-weight: 750;
+      letter-spacing: -.02em;
+    }
+
+    .brand-text small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .topbar-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 650px;
+      margin-bottom: 12px;
+      font-family: Georgia, serif;
+      font-size: clamp(38px, 5vw, 60px);
+      font-weight: 600;
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      max-width: 580px;
+      margin-bottom: 34px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .login-card {
+      max-width: 520px;
+      padding: 34px;
+    }
+
+    .login-card h2 {
+      margin-bottom: 8px;
+      font-family: Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .login-card p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      margin: 24px 0 8px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input,
+    select {
+      min-height: 46px;
+      border: 1px solid #d5dfda;
+      border-radius: 10px;
+      background: #fbfcfb;
+      color: var(--ink);
+      outline: none;
+      padding: 0 14px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(22, 50, 79, .1);
+    }
+
+    .input-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .primary,
+    .secondary,
+    .danger {
+      min-height: 44px;
+      border: 0;
+      border-radius: 10px;
+      padding: 0 17px;
+      font-weight: 750;
+      transition: transform .15s, background .15s;
+    }
+
+    .primary {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .primary:hover {
+      background: var(--navy-dark);
+      transform: translateY(-1px);
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .secondary:hover {
+      background: #f4f7f5;
+    }
+
+    .danger {
+      min-height: 34px;
+      background: transparent;
+      color: var(--red);
+      font-size: 12px;
+    }
+
+    .danger:hover {
+      background: var(--red-soft);
+    }
+
+    .error {
+      min-height: 20px;
+      margin: 12px 0 0;
+      color: var(--red);
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .dashboard-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .dashboard-head h2 {
+      margin-bottom: 7px;
+      font-family: Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: -.03em;
+    }
+
+    .dashboard-head p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .refresh-note {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      padding: 22px;
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 10px;
+      font-size: 30px;
+      letter-spacing: -.04em;
+    }
+
+    .stat-accent {
+      color: var(--green);
+    }
+
+    .stat-warn {
+      color: var(--red);
+    }
+
+    .results-panel {
+      overflow: hidden;
+    }
+
+    .results-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .results-toolbar h3 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filters input {
+      width: min(260px, 30vw);
+    }
+
+    .filters select {
+      min-width: 125px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+    }
+
+    th {
+      padding: 13px 24px;
+      background: #fbfcfb;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 18px 24px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    .person {
+      font-weight: 750;
+    }
+
+    .module {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .score {
+      font-weight: 750;
+    }
+
+    .score small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 99px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pass {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .fail {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .date {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    details summary {
+      color: var(--navy);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .answer-list {
+      min-width: 290px;
+      max-width: 420px;
+      margin-top: 12px;
+      padding-top: 2px;
+    }
+
+    .answer {
+      margin: 0;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .answer strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--ink);
+    }
+
+    .answer.correct strong {
+      color: var(--green);
+    }
+
+    .answer.wrong strong {
+      color: var(--red);
+    }
+
+    .empty {
+      padding: 72px 24px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-family: Georgia, serif;
+      font-size: 22px;
+    }
+
     @media (max-width: 760px) {
-      .shell { padding: 20px 16px 48px; }
-      .topbar { margin-bottom: 38px; }
-      .topbar-note { display: none; }
-      .dashboard-head { align-items: start; flex-direction: column; }
-      .head-actions { width: 100%; justify-content: space-between; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .results-toolbar { align-items: stretch; flex-direction: column; }
-      .filters { flex-direction: column; }
-      .filters input, .filters select { width: 100%; }
-      .login-card { padding: 24px; }
-      .input-row { flex-direction: column; }
+      .shell {
+        padding: 20px 16px 48px;
+      }
+
+      .topbar {
+        margin-bottom: 38px;
+      }
+
+      .topbar-note {
+        display: none;
+      }
+
+      .dashboard-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .head-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .results-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+
+      .filters input,
+      .filters select {
+        width: 100%;
+      }
+
+      .login-card {
+        padding: 24px;
+      }
+
+      .input-row {
+        flex-direction: column;
+      }
+    }
+
+    .user-row {
+      cursor: pointer;
+    }
+
+    .user-row:hover {
+      background: #f7faf8;
+    }
+
+    .user-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 750;
+    }
+
+    .arrow {
+      display: inline-block;
+      width: 20px;
+      color: var(--green);
+      font-size: 13px;
+    }
+
+    .user-details td {
+      padding: 0 24px 20px;
+      background: #fafcfb;
+    }
+
+    .attempts-container {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .attempts-table {
+      min-width: 760px;
+    }
+
+    .attempts-table th {
+      padding: 12px 14px;
+      background: #f3f7f4;
+    }
+
+    .attempts-table td {
+      padding: 14px;
+    }
+
+    .user-actions {
+      margin-top: 12px;
+    }
+
+    .user-actions .danger {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #f1c7c0;
     }
   </style>
 </head>
+
 <body>
   <main class="shell">
     <header class="topbar">
@@ -128,14 +605,17 @@
     <section id="login">
       <p class="eyebrow">Administrator access</p>
       <h1>Keep learning<br>moving forward.</h1>
-      <p class="intro">Review quiz progress, celebrate pass marks, and spot where your team may need a little more support.</p>
+      <p class="intro">Review quiz progress, celebrate pass marks, and spot where your team may need a little more
+        support.</p>
       <form id="loginForm" class="panel login-card">
         <h2>Welcome back</h2>
         <p>Sign in to view all completed quiz attempts.</p>
-        <input type="text" name="username" value="admin" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0">
+        <input type="text" name="username" value="admin" autocomplete="username" tabindex="-1" aria-hidden="true"
+          style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0">
         <label class="field-label" for="password">Admin password</label>
         <div class="input-row">
-          <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password"
+            required>
           <button class="primary" type="submit">Sign in</button>
         </div>
         <p id="error" class="error" role="alert"></p>
@@ -157,10 +637,14 @@
       </div>
 
       <div class="stats">
-        <div class="panel stat"><span class="stat-label">Total attempts</span><strong id="totalAttempts" class="stat-value">0</strong></div>
-        <div class="panel stat"><span class="stat-label">Passed <span class="stat-accent">●</span></span><strong id="totalPass" class="stat-value stat-accent">0</strong></div>
-        <div class="panel stat"><span class="stat-label">Needs support <span class="stat-warn">●</span></span><strong id="totalFail" class="stat-value stat-warn">0</strong></div>
-        <div class="panel stat"><span class="stat-label">Average score</span><strong id="averageScore" class="stat-value">0%</strong></div>
+        <div class="panel stat"><span class="stat-label">Total attempts</span><strong id="totalAttempts"
+            class="stat-value">0</strong></div>
+        <div class="panel stat"><span class="stat-label">Passed <span class="stat-accent">●</span></span><strong
+            id="totalPass" class="stat-value stat-accent">0</strong></div>
+        <div class="panel stat"><span class="stat-label">Needs support <span class="stat-warn">●</span></span><strong
+            id="totalFail" class="stat-value stat-warn">0</strong></div>
+        <div class="panel stat"><span class="stat-label">Average score</span><strong id="averageScore"
+            class="stat-value">0%</strong></div>
       </div>
 
       <div class="panel results-panel">
@@ -256,35 +740,334 @@
       $('averageScore').textContent = `${average}%`;
     }
 
+    function groupResultsByUser(results) {
+      const grouped = {};
+
+      results.forEach((result) => {
+        const nickname = result.nickname || "Unknown";
+
+        if (!grouped[nickname]) {
+          grouped[nickname] = [];
+        }
+
+        grouped[nickname].push(result);
+      });
+
+      return Object.entries(grouped)
+        .map(([nickname, attempts]) => {
+          attempts.sort((a, b) => {
+            return new Date(b.completedAt) - new Date(a.completedAt);
+          });
+
+          return {
+            nickname,
+            attempts,
+            latest: attempts[0]
+          };
+        })
+        .sort((a, b) => {
+          return new Date(b.latest.completedAt) -
+            new Date(a.latest.completedAt);
+        });
+    }
+
+
     function renderResults() {
       const query = $('search').value.trim().toLowerCase();
       const status = $('statusFilter').value;
+
       const filtered = allResults.filter((result) => {
-        const matchesQuery = !query || `${result.nickname} ${result.moduleName}`.toLowerCase().includes(query);
-        const matchesStatus = status === 'all' || (status === 'passed' ? result.passed : !result.passed);
+        const matchesQuery =
+          !query ||
+          `${result.nickname} ${result.moduleName}`
+            .toLowerCase()
+            .includes(query);
+
+        const matchesStatus =
+          status === 'all' ||
+          (status === 'passed'
+            ? result.passed
+            : !result.passed);
+
         return matchesQuery && matchesStatus;
       });
-      if (!filtered.length) {
-        $('results').innerHTML = `<div class="empty"><strong>${allResults.length ? 'No matching attempts' : 'No quiz attempts yet'}</strong>${allResults.length ? 'Try adjusting your search or filter.' : 'Completed quizzes will appear here.'}</div>`;
+
+      const groupedUsers = groupResultsByUser(filtered);
+
+      if (!groupedUsers.length) {
+        $('results').innerHTML = `
+      <div class="empty">
+        <strong>
+          ${allResults.length
+            ? 'No matching attempts'
+            : 'No quiz attempts yet'}
+        </strong>
+
+        ${allResults.length
+            ? 'Try adjusting your search or filter.'
+            : 'Completed quizzes will appear here.'
+          }
+      </div>
+    `;
+
         return;
       }
-      $('results').innerHTML = `<div class="table-wrap"><table><thead><tr><th>Learner</th><th>Module</th><th>Score</th><th>Status</th><th>Completed</th><th>Answers</th></tr></thead><tbody>${filtered.map(rowTemplate).join('')}</tbody></table></div>`;
+
+      $('results').innerHTML = `
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Learner</th>
+            <th>Attempts</th>
+            <th>Latest Score</th>
+            <th>Latest Status</th>
+            <th>Latest Completed</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${groupedUsers.map((user, index) =>
+        userTemplate(user, index)
+      ).join('')}
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
     }
 
-    function rowTemplate(result) {
-      const answers = (result.answers || []).map((answer) => `
-        <p class="answer ${answer.isCorrect ? 'correct' : 'wrong'}">
-          <strong>${answer.isCorrect ? '✓ Correct' : '✗ Needs review'} · Q${esc(answer.questionNumber)}</strong>
-          ${esc(answer.question)}<br>Selected: ${esc(answer.selectedAnswer)}<br>Correct: ${esc(answer.correctAnswer)}
-        </p>`).join('');
-      return `<tr>
-        <td><span class="person">${esc(result.nickname)}</span></td>
-        <td><span class="module">${esc(result.moduleName)}</span></td>
-        <td><span class="score">${esc(result.correct)}/${esc(result.total)}<small>${esc(result.percentage)}%</small></span></td>
-        <td><span class="badge ${result.passed ? 'pass' : 'fail'}">${result.passed ? 'Passed' : 'Needs support'}</span></td>
-        <td class="date">${new Date(result.completedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
-        <td><details><summary>View answers</summary><div class="answer-list">${answers}<button class="danger" type="button" onclick="removeResult('${esc(result.id)}')">Delete attempt</button><button class="danger" type="button" onclick="removeLearner('${esc(result.nickname)}')">Delete learner · all attempts</button></div></details></td>
-      </tr>`;
+
+    function userTemplate(user, index) {
+      const latest = user.latest;
+      const detailsId = `user-details-${index}`;
+
+      return `
+    <tr class="user-row">
+
+      <td>
+
+        <button
+          type="button"
+          class="user-toggle"
+          onclick="toggleUser('${detailsId}')"
+        >
+
+          <span
+            id="${detailsId}-arrow"
+            class="arrow"
+          >
+            ▶
+          </span>
+
+          <span class="person">
+            ${esc(user.nickname)}
+          </span>
+
+        </button>
+
+      </td>
+
+      <td>
+        ${user.attempts.length}
+      </td>
+
+      <td>
+        <span class="score">
+          ${esc(latest.correct)}/${esc(latest.total)}
+          <small>${esc(latest.percentage)}%</small>
+        </span>
+      </td>
+
+      <td>
+        <span class="badge ${latest.passed ? 'pass' : 'fail'}">
+          ${latest.passed ? 'Passed' : 'Needs support'}
+        </span>
+      </td>
+
+      <td class="date">
+        ${formatDate(latest.completedAt)}
+      </td>
+
+    </tr>
+
+
+    <tr
+      id="${detailsId}"
+      class="user-details"
+      style="display: none;"
+    >
+
+      <td colspan="5">
+
+        <div class="attempts-container">
+
+          <table class="attempts-table">
+
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Completed</th>
+                <th>Answers</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              ${user.attempts.map(attemptTemplate).join('')}
+
+            </tbody>
+
+          </table>
+
+
+          <div class="user-actions">
+
+            <button
+              class="danger"
+              type="button"
+              onclick="removeLearner('${esc(user.nickname)}')"
+            >
+              Delete learner · all attempts
+            </button>
+
+          </div>
+
+        </div>
+
+      </td>
+
+    </tr>
+  `;
+    }
+
+
+    function attemptTemplate(result) {
+      const answers = (result.answers || [])
+        .map((answer) => `
+      <p class="answer ${answer.isCorrect ? 'correct' : 'wrong'}">
+
+        <strong>
+          ${answer.isCorrect
+            ? '✓ Correct'
+            : '✗ Needs review'}
+          · Q${esc(answer.questionNumber)}
+        </strong>
+
+        ${esc(answer.question)}
+        <br>
+
+        Selected:
+        ${esc(answer.selectedAnswer)}
+
+        <br>
+
+        Correct:
+        ${esc(answer.correctAnswer)}
+
+      </p>
+    `)
+        .join('');
+
+
+      return `
+    <tr>
+
+      <td>
+        <span class="module">
+          ${esc(result.moduleName)}
+        </span>
+      </td>
+
+      <td>
+
+        <span class="score">
+          ${esc(result.correct)}/${esc(result.total)}
+
+          <small>
+            ${esc(result.percentage)}%
+          </small>
+        </span>
+
+      </td>
+
+      <td>
+
+        <span class="badge ${result.passed ? 'pass' : 'fail'}">
+          ${result.passed ? 'Passed' : 'Needs support'}
+        </span>
+
+      </td>
+
+      <td class="date">
+        ${formatDate(result.completedAt)}
+      </td>
+
+      <td>
+
+        <details>
+
+          <summary>
+            View answers
+          </summary>
+
+          <div class="answer-list">
+
+            ${answers}
+
+            <button
+              class="danger"
+              type="button"
+              onclick="removeResult('${esc(result.id)}')"
+            >
+              Delete attempt
+            </button>
+
+          </div>
+
+        </details>
+
+      </td>
+
+    </tr>
+  `;
+    }
+
+
+    function toggleUser(detailsId) {
+      const details = document.getElementById(detailsId);
+      const arrow = document.getElementById(`${detailsId}-arrow`);
+
+      const isOpen = details.style.display === 'table-row';
+
+      details.style.display =
+        isOpen ? 'none' : 'table-row';
+
+      arrow.textContent =
+        isOpen ? '▶' : '▼';
+    }
+
+
+    function formatDate(value) {
+      if (!value) return '-';
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return '-';
+      }
+
+      return date.toLocaleString([], {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
     }
 
     async function removeResult(id) {
@@ -316,4 +1099,5 @@
     }
   </script>
 </body>
+
 </html>
