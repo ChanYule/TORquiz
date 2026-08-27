@@ -65,6 +65,69 @@
       .filters { flex-direction: column; }
       .filters input, .filters select { width: 100%; }
     }
+
+    .user-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.user-row:hover {
+  background: #f7faf8;
+}
+
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: none;
+  background: transparent;
+
+  padding: 0;
+
+  color: var(--ink);
+  cursor: pointer;
+
+  font-weight: 750;
+}
+
+.arrow {
+  display: inline-block;
+
+  width: 20px;
+
+  color: var(--green);
+
+  font-size: 13px;
+}
+
+.user-details {
+  background: #fafcfb;
+}
+
+.attempts-container {
+  padding: 14px 0 4px;
+}
+
+.attempts-table {
+  width: 100%;
+
+  min-width: 600px;
+
+  border: 1px solid var(--line);
+
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.attempts-table th {
+  background: #f3f7f4;
+}
+
+.attempts-table td {
+  background: white;
+}
   </style>
 </head>
 <body>
@@ -105,61 +168,369 @@
     <p class="privacy-note"><span>✓</span> This public view shows scores only. Detailed answers and result management are available to administrators.</p>
   </main>
 
-  <script>
-    let allResults = [];
-    const $ = (id) => document.getElementById(id);
-    const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    }[char]));
+<script>
+  let allResults = [];
+  const $ = (id) => document.getElementById(id);
 
-    $('search').addEventListener('input', renderResults);
-    $('statusFilter').addEventListener('change', renderResults);
+  const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[char]));
 
-    async function loadResults() {
-      try {
-        const response = await fetch('/api/public/results');
-        if (!response.ok) throw new Error('Unable to load scores.');
-        allResults = await response.json();
-        updateStats();
-        renderResults();
-      } catch (error) {
-        $('results').innerHTML = `<div class="empty"><strong>Scores are unavailable</strong>${esc(error.message)}</div>`;
+  $('search').addEventListener('input', renderResults);
+  $('statusFilter').addEventListener('change', renderResults);
+
+  async function loadResults() {
+    try {
+      const response = await fetch('/api/public/results');
+
+      if (!response.ok) {
+        throw new Error('Unable to load scores.');
       }
-    }
 
-    function updateStats() {
-      const passed = allResults.filter((result) => result.passed).length;
-      const average = allResults.length
-        ? Math.round(allResults.reduce((sum, result) => sum + Number(result.percentage || 0), 0) / allResults.length)
-        : 0;
-      $('totalAttempts').textContent = allResults.length;
-      $('totalPass').textContent = passed;
-      $('averageScore').textContent = `${average}%`;
-    }
+      allResults = await response.json();
 
-    function renderResults() {
-      const query = $('search').value.trim().toLowerCase();
-      const status = $('statusFilter').value;
-      const filtered = allResults.filter((result) => {
-        const matchesQuery = !query || `${result.nickname} ${result.moduleName}`.toLowerCase().includes(query);
-        const matchesStatus = status === 'all' || (status === 'passed' ? result.passed : !result.passed);
-        return matchesQuery && matchesStatus;
-      });
-      if (!filtered.length) {
-        $('results').innerHTML = `<div class="empty"><strong>${allResults.length ? 'No matching scores' : 'No quiz attempts yet'}</strong>${allResults.length ? 'Try adjusting your search or filter.' : 'Completed quizzes will appear here.'}</div>`;
-        return;
+      updateStats();
+      renderResults();
+
+    } catch (error) {
+      $('results').innerHTML = `
+        <div class="empty">
+          <strong>Scores are unavailable</strong>
+          ${esc(error.message)}
+        </div>
+      `;
+    }
+  }
+
+  function updateStats() {
+    const passed = allResults.filter((result) => result.passed).length;
+
+    const average = allResults.length
+      ? Math.round(
+          allResults.reduce(
+            (sum, result) =>
+              sum + Number(result.percentage || 0),
+            0
+          ) / allResults.length
+        )
+      : 0;
+
+    $('totalAttempts').textContent = allResults.length;
+    $('totalPass').textContent = passed;
+    $('averageScore').textContent = `${average}%`;
+  }
+
+  function groupResultsByUser(results) {
+
+    const grouped = {};
+
+    results.forEach((result) => {
+
+      const nickname = result.nickname;
+
+      if (!grouped[nickname]) {
+        grouped[nickname] = [];
       }
-      $('results').innerHTML = `<div class="table-wrap"><table><thead><tr><th>Learner</th><th>Module</th><th>Score</th><th>Status</th><th>Completed</th></tr></thead><tbody>${filtered.map((result) => `
-        <tr>
-          <td><span class="person">${esc(result.nickname)}</span></td>
-          <td><span class="module">${esc(result.moduleName)}</span></td>
-          <td><span class="score">${esc(result.correct)}/${esc(result.total)}<small>${esc(result.percentage)}%</small></span></td>
-          <td><span class="badge ${result.passed ? 'pass' : 'fail'}">${result.passed ? 'Passed' : 'Needs support'}</span></td>
-          <td class="date">${new Date(result.completedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
-        </tr>`).join('')}</tbody></table></div>`;
+
+      grouped[nickname].push(result);
+
+    });
+
+    return Object.entries(grouped).map(([nickname, attempts]) => {
+
+      attempts.sort((a, b) =>
+        new Date(b.completedAt) - new Date(a.completedAt)
+      );
+
+      return {
+        nickname,
+        attempts,
+        latest: attempts[0]
+      };
+
+    });
+
+  }
+
+  function renderResults() {
+
+    const query = $('search').value
+      .trim()
+      .toLowerCase();
+
+    const status = $('statusFilter').value;
+
+    let filtered = allResults.filter((result) => {
+
+      const searchableText =
+        `${result.nickname} ${result.moduleName}`.toLowerCase();
+
+      const matchesQuery =
+        !query ||
+        searchableText.includes(query);
+
+      const matchesStatus =
+        status === 'all' ||
+        (status === 'passed'
+          ? result.passed
+          : !result.passed);
+
+      return matchesQuery && matchesStatus;
+
+    });
+
+    const groupedUsers = groupResultsByUser(filtered);
+
+    if (!groupedUsers.length) {
+
+      $('results').innerHTML = `
+        <div class="empty">
+          <strong>
+            ${allResults.length
+              ? 'No matching scores'
+              : 'No quiz attempts yet'}
+          </strong>
+
+          ${
+            allResults.length
+              ? 'Try adjusting your search or filter.'
+              : 'Completed quizzes will appear here.'
+          }
+        </div>
+      `;
+
+      return;
     }
 
-    loadResults();
-  </script>
+    $('results').innerHTML = `
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Learner</th>
+              <th>Attempts</th>
+              <th>Latest Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${groupedUsers.map((user, userIndex) => {
+
+              const latest = user.latest;
+              const detailsId = `user-details-${userIndex}`;
+
+              return `
+
+                <tr
+                  class="user-row"
+                  onclick="toggleUser('${detailsId}')"
+                >
+
+                  <td>
+
+                    <button
+                      class="dropdown-button"
+                      type="button"
+                    >
+
+                      <span
+                        class="arrow"
+                        id="${detailsId}-arrow"
+                      >
+                        ▶
+                      </span>
+
+                      <span class="person">
+                        ${esc(user.nickname)}
+                      </span>
+
+                    </button>
+
+                  </td>
+
+                  <td>
+                    ${user.attempts.length}
+                  </td>
+
+                  <td>
+
+                    <span class="score">
+
+                      ${esc(latest.correct)}
+                      /
+                      ${esc(latest.total)}
+
+                      <small>
+                        ${esc(latest.percentage)}%
+                      </small>
+
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <span class="badge ${latest.passed ? 'pass' : 'fail'}">
+
+                      ${
+                        latest.passed
+                          ? 'Passed'
+                          : 'Needs support'
+                      }
+
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <tr
+                  id="${detailsId}"
+                  class="user-details"
+                  style="display: none;"
+                >
+
+                  <td colspan="4">
+
+                    <div class="attempts-container">
+
+                      <table class="attempts-table">
+
+                        <thead>
+
+                          <tr>
+                            <th>Module</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Completed</th>
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          ${user.attempts.map((result) => `
+
+                            <tr>
+
+                              <td>
+                                <span class="module">
+                                  ${esc(result.moduleName)}
+                                </span>
+                              </td>
+
+                              <td>
+
+                                <span class="score">
+
+                                  ${esc(result.correct)}
+                                  /
+                                  ${esc(result.total)}
+
+                                  <small>
+                                    ${esc(result.percentage)}%
+                                  </small>
+
+                                </span>
+
+                              </td>
+
+                              <td>
+
+                                <span
+                                  class="badge ${
+                                    result.passed
+                                      ? 'pass'
+                                      : 'fail'
+                                  }"
+                                >
+
+                                  ${
+                                    result.passed
+                                      ? 'Passed'
+                                      : 'Needs support'
+                                  }
+
+                                </span>
+
+                              </td>
+
+                              <td class="date">
+
+                                ${new Date(
+                                  result.completedAt
+                                ).toLocaleString(
+                                  [],
+                                  {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short'
+                                  }
+                                )}
+
+                              </td>
+
+                            </tr>
+
+                          `).join('')}
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            }).join('')}
+
+          </tbody>
+
+        </table>
+
+      </div>
+    `;
+
+  }
+
+  function toggleUser(detailsId) {
+
+    const details =
+      document.getElementById(detailsId);
+
+    const arrow =
+      document.getElementById(
+        `${detailsId}-arrow`
+      );
+
+    const isOpen =
+      details.style.display === 'table-row';
+
+    details.style.display =
+      isOpen
+        ? 'none'
+        : 'table-row';
+
+    arrow.textContent =
+      isOpen
+        ? '▶'
+        : '▼';
+
+  }
+
+  loadResults();
+</script>
 </body>
 </html>
